@@ -23,20 +23,20 @@ class GuPiaoCal
     public $wastedDays;
 
     public $yongjinByNum = false;//佣金
-    public $yongjinRate = 0.003;
-    public $yongjinMinAmount = 5;
+    public $yongjinRate = 0.16;//%千分之1.6,最低5元 双向收费
+    public $yongjinMinAmount = 5;//元
     public $yinhuaByNum = false;//印花
-    public $yinhuaRate = 0.003;
-    public $yinhuaMinAmount = 5;
+    public $yinhuaRate = 0.1;//%单向金额的千分之一
+    public $yinhuaMinAmount = 0.01;
     public $guohuByNum = false;//过户
-    public $guohuRate = 0.003;
-    public $guohuMinAmount = 5;
+    public $guohuRate = 0.001;//%双向十万分之2 仅上海证劵 进一法
+    public $guohuMinAmount = 0.01;
 
     public function __construct()
     {
     }
 
-    public function init($timeFromInt, $timeToInt, $historyPrice, $nowPrice, $holdNum=10000)
+    public function init($timeFromInt, $timeToInt, $historyPrice, $nowPrice, $holdNum = 10000)
     {
         $this->timeFromStr = date('Y-m-d', $timeFromInt);
         $this->timeToStr = date('Y-m-d', $timeToInt);
@@ -50,17 +50,13 @@ class GuPiaoCal
     }
 
     /**
-     * 双向计算收费
+     * 双向计算收费 sold
      * */
     public function getTwoWayFee()
     {
-        if ($this->yongjinByNum) {
-            $buy_yongjin = $this->holdNum * $this->yongjinRate;
-            $sold_yongjin = $this->holdNum * $this->yongjinRate;
-        } else {
-            $buy_yongjin = $this->holdNum * $this->yongjinRate;
-            $sold_yongjin = $this->holdNum * $this->yongjinRate;
-        }
+        //佣金
+        $buy_yongjin = ceil($this->holdNum * $this->historyPrice * $this->yongjinRate) / 100;
+        $sold_yongjin = ceil($this->holdNum * $this->nowPrice * $this->yongjinRate) / 100;
         if ($buy_yongjin < $this->yongjinMinAmount) {
             $buy_yongjin = $this->yongjinMinAmount;
         }
@@ -68,28 +64,17 @@ class GuPiaoCal
             $sold_yongjin = $this->yongjinMinAmount;
         }
 
-
-        if ($this->yinhuaByNum) {
-            $buy_yinhua = $this->holdNum * $this->yinhuaRate;
-            $sold_yinhua = $this->holdNum * $this->yinhuaRate;
-        } else {
-            $buy_yinhua = $this->holdNum * $this->yinhuaRate;
-            $sold_yinhua = $this->holdNum * $this->yinhuaRate;
-        }
-        if ($buy_yinhua < $this->yinhuaMinAmount) {
-            $buy_yinhua = $this->yinhuaMinAmount;
-        }
+        //印花税
+        $buy_yinhua = 0;
+        $sold_yinhua = ceil($this->holdNum * $this->nowPrice * $this->yinhuaRate) / 100;
         if ($sold_yinhua < $this->yinhuaMinAmount) {
             $sold_yinhua = $this->yinhuaMinAmount;
         }
 
-        if ($this->guohuByNum) {
-            $buy_guohu = $this->holdNum * $this->guohuRate;
-            $sold_guohu = $this->holdNum * $this->guohuRate;
-        } else {
-            $buy_guohu = $this->holdNum * $this->guohuRate;
-            $sold_guohu = $this->holdNum * $this->guohuRate;
-        }
+
+        $buy_guohu = ceil($this->holdNum * $this->historyPrice * $this->guohuRate) / 100;
+        $sold_guohu = ceil($this->holdNum * $this->nowPrice * $this->guohuRate) / 100;
+
         if ($buy_guohu < $this->guohuMinAmount) {
             $buy_guohu = $this->guohuMinAmount;
         }
@@ -106,65 +91,94 @@ class GuPiaoCal
      * */
     public function getOneWayFee()
     {
-        if ($this->yongjinByNum) {
-            $sold_yongjin = $this->holdNum * $this->yongjinRate;
-        } else {
-            $sold_yongjin = $this->holdNum * $this->yongjinRate;
-        }
+        //佣金
+        $sold_yongjin = ceil($this->holdNum * $this->nowPrice * $this->yongjinRate) / 100;
         if ($sold_yongjin < $this->yongjinMinAmount) {
             $sold_yongjin = $this->yongjinMinAmount;
         }
 
-
-        if ($this->yinhuaByNum) {
-            $sold_yinhua = $this->holdNum * $this->yinhuaRate;
-        } else {
-            $sold_yinhua = $this->holdNum * $this->yinhuaRate;
-        }
+        //印花税
+        $buy_yinhua = 0;
+        $sold_yinhua = ceil($this->holdNum * $this->nowPrice * $this->yinhuaRate) / 100;
         if ($sold_yinhua < $this->yinhuaMinAmount) {
             $sold_yinhua = $this->yinhuaMinAmount;
         }
 
-        if ($this->guohuByNum) {
-            $sold_guohu = $this->holdNum * $this->guohuRate;
-        } else {
-            $sold_guohu = $this->holdNum * $this->guohuRate;
-        }
+        //过户
+        $sold_guohu = ceil($this->holdNum * $this->nowPrice * $this->guohuRate) / 100;
         if ($sold_guohu < $this->guohuMinAmount) {
             $sold_guohu = $this->guohuMinAmount;
         }
 
-        $rawFee = ($this->buy_yongjin + $sold_yongjin + $this->buy_yinhua + $sold_yinhua + $this->buy_guohu + $sold_guohu);
+        $rawFee = ($this->buy_yongjin + $sold_yongjin + $buy_yinhua + $sold_yinhua + $this->buy_guohu + $sold_guohu);
         return $fee = round($rawFee, 2);
     }
 
+    /**
+     *  粗略收益，不包括手续费
+     * */
     public function getRawIncome()
     {
         return ($this->nowPrice - $this->historyPrice) * $this->holdNum;
     }
 
-    public function getRealIncome(){
-        $rawIncome=$this->getRawIncome();
-        $fee=$this->getTwoWayFee();
-        $days=$this->getHoldDays();
-        $realIncome=($rawIncome - $fee);
-        $rate=($realIncome/$this->holdNum/$this->historyPrice);
-        $yearRate=$rate*$days/$this->yearDays;
-        return ['realIncome'=>$realIncome,'rawIncome'=>$rawIncome,'rate'=>$rate,'annualRate'=>$yearRate];
+    /**
+     *  真实收益相关
+     * */
+    public function getAnnualRate()
+    {
+        $rawIncome = $this->getRawIncome();
+        $fee = $this->getTwoWayFee();
+        $days = $this->getHoldDays();
+        $realIncome = ($rawIncome - $fee);
+        $rate = ($realIncome / $this->holdNum / $this->historyPrice);
+        $yearRate = $rate * $days / $this->yearDays;
+        return ['realIncome' => $realIncome, 'rawIncome' => $rawIncome, 'rate' => $rate, 'annualRate' => $yearRate];
     }
 
-    public function getSoldPriceByAnnualRate($yearRate){
-        $days=$this->getHoldDays();
-        $rate=$yearRate*$this->yearDays/$days;
-        $fee=$this->getTwoWayFee();
-        $rawPrice=;
-        $rawIncome=$this->getRawIncome();
-        $realIncome=($rawIncome - $fee);
-        $rate=($realIncome/$this->holdNum/$this->historyPrice);
-        return ['realIncome'=>$realIncome,'rawIncome'=>$rawIncome,'rate'=>$rate,'annualRate'=>$yearRate];
+    /**
+     *  get sold price by annual rate
+     * @param $yearRate float 0.01 mean 1%
+     * @param $calByTwoWay boolean is fee calculate by get buyfee from database or by pure calculate
+     * @return array
+     * */
+    public function getSoldPriceByAnnualRate($yearRate, $calByTwoWay = false)
+    {
+        $days = $this->getHoldDays();
+        $rate = $yearRate * $this->yearDays / $days;
+        if ($calByTwoWay) {
+            $fee = $this->getTwoWayFee();
+        } else {
+            $fee = $this->getOneWayFee();
+        }
+        $realIncome = $rate * $this->historyPrice * $this->holdNum;
+        $realPrice = ($realIncome + $fee) / $this->holdNum;
+        $rawPrice = (1 + $rate) * $this->historyPrice;
+        return ['realIncome' => $realIncome, 'realPrice' => $realPrice, 'rate' => $rate, 'rawPrice' => $rawPrice, 'rawIncome' => $realIncome + $fee];
     }
 
-    public function getHoldDays(){
-        return $this->daysDiff +2;
+    //通过锁定价格得到每一天的收益率
+    public function getAnnualRatesByLockedPrice($startDate=null,$days=30,$key=''){
+        if(empty($startDate)){
+            $startDate=$this->timeToInt;
+        }else{
+            $startDate=strtotime($startDate);
+        }
+        if(abs(time()-$startDate)/86400 <360){
+            return false;
+        }
     }
+
+
+    //通过锁定价格得到每一天的收益率
+    public function getPricesByLockedAnnualRate($startDate=null,$days=30,$key=''){
+
+    }
+    //按照间隔时间 加上损失两天计算
+    public function getHoldDays()
+    {
+        return $this->daysDiff + 2;
+    }
+
+
 }
