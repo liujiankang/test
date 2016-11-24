@@ -13,7 +13,7 @@ class GuPiaoCal
 {
     public $timeFromStr;
     public $timeFromInt;
-    public $timetoStr;
+    public $timeToStr;
     public $timeToInt;
     public $daysDiff;
     public $holdNum;
@@ -21,21 +21,28 @@ class GuPiaoCal
     public $nowPrice;
     public $error;
     public $wastedDays;
+    public $thisYearGupiaoDays;//
 
-    public $yongjinByNum = false;//佣金
+    public $isByTwoWay = true;
+    //public $yongjinByNum = false;//佣金
     public $yongjinRate = 0.16;//%千分之1.6,最低5元 双向收费
     public $yongjinMinAmount = 5;//元
-    public $yinhuaByNum = false;//印花
+    public $buy_yongjin = 0;
+    //public $yinhuaByNum = false;//印花
     public $yinhuaRate = 0.1;//%单向金额的千分之一
     public $yinhuaMinAmount = 0.01;
-    public $guohuByNum = false;//过户
+    //public $guohuByNum = false;//过户
     public $guohuRate = 0.001;//%双向十万分之2 仅上海证劵 进一法
     public $guohuMinAmount = 0.01;
+    public $buy_guohu = 0;
 
     public function __construct()
     {
     }
 
+    /**
+     * 初始化赋值
+     * */
     public function init($timeFromInt, $timeToInt, $historyPrice, $nowPrice, $holdNum = 10000)
     {
         $this->timeFromStr = date('Y-m-d', $timeFromInt);
@@ -43,14 +50,14 @@ class GuPiaoCal
         $this->timeFromInt = $timeFromInt;
         $this->timeToInt = $timeToInt;
 
-        $this->daysDiff = round((strtotime($this->timetoStr) - strtotime($this->timetoStr)) / 86400, 0);
+        $this->daysDiff = round(($this->timeToInt - $this->timeFromInt) / 86400, 0);
         $this->historyPrice = $historyPrice;
         $this->nowPrice = $nowPrice;
         $this->holdNum = $holdNum;
     }
 
     /**
-     * 双向计算收费 sold
+     * 买入手续费通过计算方式获取，卖出手续费通过计算方式获取
      * */
     public function getTwoWayFee()
     {
@@ -87,7 +94,7 @@ class GuPiaoCal
     }
 
     /**
-     * 单向计算收费
+     * 单向计算收费：买入手续费通过读取数据库获取，卖出手续费通过计算方式获取
      * */
     public function getOneWayFee()
     {
@@ -123,34 +130,45 @@ class GuPiaoCal
     }
 
     /**
-     *  真实收益相关
+     * 得到去除手续费的年化收益
      * */
     public function getAnnualRate()
     {
         $rawIncome = $this->getRawIncome();
-        $fee = $this->getTwoWayFee();
+        if ($this->isByTwoWay) {
+            $fee = $this->getTwoWayFee();
+        } else {
+            $fee = $this->getOneWayFee();
+        }
         $days = $this->getHoldDays();
         $realIncome = ($rawIncome - $fee);
         $rate = ($realIncome / $this->holdNum / $this->historyPrice);
-        $yearRate = $rate * $days / $this->yearDays;
+        $yearRate = $rate * $days / $this->thisYearGupiaoDays;
         return ['realIncome' => $realIncome, 'rawIncome' => $rawIncome, 'rate' => $rate, 'annualRate' => $yearRate];
     }
 
     /**
      *  get sold price by annual rate
      * @param $yearRate float 0.01 mean 1%
-     * @param $calByTwoWay boolean is fee calculate by get buyfee from database or by pure calculate
      * @return array
      * */
-    public function getSoldPriceByAnnualRate($yearRate, $calByTwoWay = false)
+    public function getSoldPriceByAnnualRate($yearRate, $accuracy = 0.01)
     {
         $days = $this->getHoldDays();
-        $rate = $yearRate * $this->yearDays / $days;
-        if ($calByTwoWay) {
-            $fee = $this->getTwoWayFee();
-        } else {
-            $fee = $this->getOneWayFee();
+        $rate = $yearRate * $days / $this->thisYearGupiaoDays;
+        $rawPrice = (1 + 2 * $rate) * $this->historyPrice;
+        $originalHistoryPrice=$this->historyPrice;
+        $originalNowPrice=$this->nowPrice;
+        for ($times=0;$times<100;$times++){
+            $tempAnnualRateArray=$this->getAnnualRate();
+            $tempAnnualRate=$tempAnnualRateArray['annualRate'];
+            if($tempAnnualRateArray>$yearRate){
+
+            }else{
+                
+            }
         }
+
         $realIncome = $rate * $this->historyPrice * $this->holdNum;
         $realPrice = ($realIncome + $fee) / $this->holdNum;
         $rawPrice = (1 + $rate) * $this->historyPrice;
@@ -158,22 +176,25 @@ class GuPiaoCal
     }
 
     //通过锁定价格得到每一天的收益率
-    public function getAnnualRatesByLockedPrice($startDate=null,$days=30,$key=''){
-        if(empty($startDate)){
-            $startDate=$this->timeToInt;
-        }else{
-            $startDate=strtotime($startDate);
+    public function getAnnualRatesByLockedPrice($startDate = null, $days = 30, $key = '')
+    {
+        if (empty($startDate)) {
+            $startDate = $this->timeToInt;
+        } else {
+            $startDate = strtotime($startDate);
         }
-        if(abs(time()-$startDate)/86400 <360){
+        if (abs(time() - $startDate) / 86400 < 360) {
             return false;
         }
     }
 
 
     //通过锁定价格得到每一天的收益率
-    public function getPricesByLockedAnnualRate($startDate=null,$days=30,$key=''){
+    public function getPricesByLockedAnnualRate($startDate = null, $days = 30, $key = '')
+    {
 
     }
+
     //按照间隔时间 加上损失两天计算
     public function getHoldDays()
     {
