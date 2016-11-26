@@ -1,16 +1,16 @@
 <?php
 
-namespace frontend\models\user;
+namespace frontend\models\runconf;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\user\Charge;
+use frontend\models\runconf\RuntimeConfig;
 
 /**
- * ChargeSearch represents the model behind the search form about `frontend\models\user\Charge`.
+ * RuntimeConfigSearch represents the model behind the search form about `frontend\models\runconf\RuntimeConfig`.
  */
-class ChargeSearch extends Charge
+class RuntimeConfigSearch extends RuntimeConfig
 {
     /**
      * @inheritdoc
@@ -18,9 +18,8 @@ class ChargeSearch extends Charge
     public function rules()
     {
         return [
-            [['id', 'uid', 'date_int', 'status'], 'integer'],
-            [['amount'], 'number'],
-            [['date_str'], 'safe'],
+            [['id', 'last_time'], 'integer'],
+            [['model', 'action', 'describe'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class ChargeSearch extends Charge
      */
     public function search($params)
     {
-        $query = Charge::find();
+        $query = RuntimeConfig::find();
 
         // add conditions that should always apply here
 
@@ -61,12 +60,12 @@ class ChargeSearch extends Charge
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'uid' => $this->uid,
-            'amount' => $this->amount,
-            'date_str' => $this->date_str,
-            'date_int' => $this->date_int,
-            'status' => $this->status,
+            'last_time' => $this->last_time,
         ]);
+
+        $query->andFilterWhere(['like', 'model', $this->model])
+            ->andFilterWhere(['like', 'action', $this->action])
+            ->andFilterWhere(['like', 'describe', $this->describe]);
 
         return $dataProvider;
     }

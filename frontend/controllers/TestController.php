@@ -2,8 +2,8 @@
 namespace frontend\controllers;
 
 use common\models\config\RuntimeConfig;
-use common\models\holiday\RawHoliday;
-use common\models\holiday\RealHoliday;
+use common\models\config\HolidayRaw;
+use common\models\config\HolidayReal;
 use yii\db\Query;
 use Yii;
 
@@ -11,7 +11,7 @@ use Yii;
 /**
  * Site controller
  */
-class TestController extends BasicController
+class TestController extends BaseController
 {
 
     public $thisTime;
@@ -19,9 +19,9 @@ class TestController extends BasicController
 
     public function init()
     {
-        $lastTimes = RuntimeConfig::findOne(['action' => 'holidayUpdate']);
+        $lastTimes = RuntimeConfig::findOne(['action' => 'holiday_update']);
         if (empty($lastTimes)) {
-            echo 'holidayUpdate config erroe';
+            echo 'holidayUpdate config error';
         }
         $this->thisTime = time();
         $this->thisLastTime = $lastTimes->last_time;
@@ -40,19 +40,19 @@ class TestController extends BasicController
             $deletNum = $this->delOneMonthGupiaoDays($holidays);
             $addNum = $this->addOneMonthGupiaoDays($gupiaoDay);
             print_r([$month, $holidays, $gupiaoDay, $deletNum, $addNum]);
-            die;
+            //die;
         }
     }
 
     public function isNeedUpdate()
     {
-        $isHave = (new Query())->select('id')->from(RawHoliday::tableName())->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->one();
+        $isHave = (new Query())->select('id')->from(HolidayRaw::tableName())->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->one();
         return (bool)$isHave;
     }
 
     public function getNeedUpdateMonths()
     {
-        $months = (new Query())->select('*')->from(RawHoliday::tableName())->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->all();
+        $months = (new Query())->select('*')->from(HolidayRaw::tableName())->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->all();
         if (!$months) {
             return [];
         }
@@ -69,14 +69,15 @@ class TestController extends BasicController
     public function getHolidayOfOneMonth($date)
     {
         $month = substr($date, 0, 8);
-        $oneMonthHolidays = (new Query())->select('date_str')->from(RawHoliday::tableName())->where(['like', 'date_str', $month])->all();
-        return array_column($oneMonthHolidays, 'date_str');
+        return $oneMonthHolidays = HolidayRaw::find()
+            ->where(['like', 'date_str', $month])
+            ->all();
     }
 
-    public function getOneMonthGupiaoDays($monthHolydays)
+    public function getOneMonthGupiaoDays($monthHolidays)
     {
-        if (is_array($monthHolydays) && count($monthHolydays) >= 1) {
-            $date = current($monthHolydays);
+        if (is_array($monthHolidays) && count($monthHolidays) >= 1) {
+            $date = current($monthHolidays);
             $timeTemp = strtotime($date);
             $monthStart = mktime(0, 0, 0, date('m', $timeTemp), 1, date('Y', $timeTemp));
             $monthEnd = mktime(23, 59, 59, date('m', $timeTemp) + 1, 0, date('Y', $timeTemp));
@@ -84,7 +85,7 @@ class TestController extends BasicController
             for ($i = $monthStart; $i <= $monthEnd; $i = $i + 86400) {
                 $day = date('Y-m-d', $i);
                 $weekday = date('w', $i);
-                if (!in_array($day, $monthHolydays) && !in_array($weekday, [0, 6])) {
+                if (!in_array($day, $monthHolidays) && !in_array($weekday, [0, 6])) {
                     array_push($oneMonthGupiaoDays, $day);
                 }
             }
@@ -102,7 +103,7 @@ class TestController extends BasicController
             if (strlen($month) != 8) {
                 return false;
             }
-            $delModel = RealHoliday::deleteAll(['like', 'date_str', $month]);
+            $delModel = HolidayReal::deleteAll(['like', 'date_str', $month]);
             return $delModel;
         }
         return false;
@@ -110,8 +111,20 @@ class TestController extends BasicController
 
     public function delOneMonthHolidayDays($holidays)
     {
+        foreach ($holidays as $days){
+            HolidayReal::updateAll(['status' => 0, 'type' => $days['type']], ['date_str' => $days['date_str']]);
+        }
+    }
+
+    public function addOneMonthGupiaoDays($gupiaoDays)
+    {
+        return HolidayReal::updateAll(['status' => 1, 'type' => ''], ['date_str' => $gupiaoDays]);
+    }
+
+    public function delOneMonthHolidayDaysHeard($holidays)
+    {
         if (is_array($holidays) && count($holidays) > 0) {
-            $delModel = RealHoliday::find()->where(['date_str' => $holidays])->all();
+            $delModel = HolidayReal::find()->where(['date_str' => $holidays])->all();
             if ($delModel) {
                 foreach ($delModel as $del) {
                     $del->delete();
@@ -121,13 +134,14 @@ class TestController extends BasicController
         return false;
     }
 
-    public function addOneMonthGupiaoDays($gupiaoDays)
+    public function addOneMonthGupiaoDaysHeard($gupiaoDays)
     {
         if (is_array($gupiaoDays) && count($gupiaoDays) > 0) {
             foreach ($gupiaoDays as &$val) {
                 $val = [$val, strtotime($val)];
             }
-            return RealHoliday::insertAll(['date_str', 'date_int'], $gupiaoDays);
+
+            return HolidayReal::find()->createCommand()->batchInsert(HolidayReal::tableName(), ['date_str', 'date_int'], $gupiaoDays)->execute();
         }
     }
 }

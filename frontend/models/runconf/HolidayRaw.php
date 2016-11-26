@@ -1,26 +1,27 @@
 <?php
 
-namespace frontend\models\user;
+namespace frontend\models\runconf;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\user\Withdraw;
 
 /**
- * WithdrawSearch represents the model behind the search form about `frontend\models\user\Withdraw`.
+ * This is the model class for table "gp_holiday_raw".
+ *
+ * @property integer $id
+ * @property string $date_str
+ * @property integer $date_int
+ * @property string $type
+ * @property string $updated_at
  */
-class WithdrawSearch extends Withdraw
+class HolidayRaw extends \common\models\config\HolidayRaw
 {
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
-            [['id', 'uid', 'date_int', 'status'], 'integer'],
-            [['amount'], 'number'],
-            [['date_str'], 'safe'],
+            [['id', 'date_int', 'status'], 'integer'],
+            [['date_str', 'type', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,7 +43,7 @@ class WithdrawSearch extends Withdraw
      */
     public function search($params)
     {
-        $query = Withdraw::find();
+        $query = self::find();
 
         // add conditions that should always apply here
 
@@ -61,12 +62,13 @@ class WithdrawSearch extends Withdraw
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'uid' => $this->uid,
-            'amount' => $this->amount,
-            'date_str' => $this->date_str,
             'date_int' => $this->date_int,
             'status' => $this->status,
+            'updated_at' => $this->updated_at,
         ]);
+
+        $query->andFilterWhere(['like', 'date_str', $this->date_str])
+            ->andFilterWhere(['like', 'type', $this->type]);
 
         return $dataProvider;
     }

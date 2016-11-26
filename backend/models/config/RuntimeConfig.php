@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\config;
+namespace backend\models\config;
 
 use Yii;
 
@@ -13,7 +13,7 @@ use Yii;
  * @property integer $last_time
  * @property string $describe
  */
-class RuntimeConfig extends \common\models\BaseModel
+class RuntimeConfig extends \common\models\config\RuntimeConfig
 {
     /**
      * @inheritdoc

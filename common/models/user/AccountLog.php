@@ -1,27 +1,28 @@
 <?php
 
-namespace frontend\models\user;
+namespace common\models\user;
 
 use Yii;
 
 /**
- * This is the model class for table "gp_withdraw".
+ * This is the model class for table "gp_account_log".
  *
  * @property integer $id
- * @property integer $uid
+ * @property integer $user_id
  * @property string $amount
+ * @property integer $action_type
+ * @property integer $action_time
  * @property string $date_str
- * @property integer $date_int
  * @property integer $status
  */
-class Withdraw extends \common\models\user\Withdraw
+class AccountLog extends \common\models\BaseModel
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'gp_withdraw';
+        return 'gp_account_log';
     }
 
     /**
@@ -30,8 +31,8 @@ class Withdraw extends \common\models\user\Withdraw
     public function rules()
     {
         return [
-            [['uid', 'date_int', 'status'], 'integer'],
-            [['amount', 'date_int'], 'required'],
+            [['user_id', 'amount', 'action_type', 'action_time'], 'required'],
+            [['user_id', 'action_type', 'action_time', 'status'], 'integer'],
             [['amount'], 'number'],
             [['date_str'], 'safe'],
         ];
@@ -44,10 +45,11 @@ class Withdraw extends \common\models\user\Withdraw
     {
         return [
             'id' => 'ID',
-            'uid' => 'Uid',
+            'user_id' => 'User ID',
             'amount' => 'Amount',
+            'action_type' => '类型',
+            'action_time' => 'Action Time',
             'date_str' => 'Date Str',
-            'date_int' => 'Date Int',
             'status' => 'Status',
         ];
     }

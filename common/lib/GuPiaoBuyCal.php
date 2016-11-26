@@ -4,6 +4,7 @@
  * User: ufo
  * Date: 16-11-21
  * Time: 下午6:37
+ * 这里的时间间隔不是实际上的时间间隔
  */
 
 namespace common\lib;
@@ -11,9 +12,7 @@ namespace common\lib;
 
 class GuPiaoCal
 {
-    public $timeFromStr;
     public $timeFromInt;
-    public $timeToStr;
     public $timeToInt;
     public $daysDiff;
     public $holdNum;
@@ -35,6 +34,7 @@ class GuPiaoCal
     public $guohuRate = 0.001;//%双向十万分之2 仅上海证劵 进一法
     public $guohuMinAmount = 0.01;
     public $buy_guohu = 0;
+    public $annualRate = 0;
 
     public function __construct()
     {
@@ -43,17 +43,16 @@ class GuPiaoCal
     /**
      * 初始化赋值
      * */
-    public function init($timeFromInt, $timeToInt, $historyPrice, $nowPrice, $holdNum = 10000)
+    public function init($timeFromStr, $timeToStr, $historyPrice, $nowPrice, $holdNum = 10000)
     {
-        $this->timeFromStr = date('Y-m-d', $timeFromInt);
-        $this->timeToStr = date('Y-m-d', $timeToInt);
-        $this->timeFromInt = $timeFromInt;
-        $this->timeToInt = $timeToInt;
+        $this->timeFromInt = strtotime($timeFromStr);
+        $this->timeToInt = strtotime($timeToStr);
 
         $this->daysDiff = round(($this->timeToInt - $this->timeFromInt) / 86400, 0);
         $this->historyPrice = $historyPrice;
         $this->nowPrice = $nowPrice;
         $this->holdNum = $holdNum;
+        $this->annualRate = $this->getAnnualRate();
     }
 
     /**
@@ -132,7 +131,7 @@ class GuPiaoCal
     /**
      * 得到去除手续费的年化收益
      * */
-    public function getAnnualRate()
+    public function getAnnualRate($isOtherDate = false)
     {
         $rawIncome = $this->getRawIncome();
         if ($this->isByTwoWay) {
@@ -144,7 +143,19 @@ class GuPiaoCal
         $realIncome = ($rawIncome - $fee);
         $rate = ($realIncome / $this->holdNum / $this->historyPrice);
         $yearRate = $rate * $days / $this->thisYearGupiaoDays;
-        return ['realIncome' => $realIncome, 'rawIncome' => $rawIncome, 'rate' => $rate, 'annualRate' => $yearRate];
+        $return = ['realIncome' => $realIncome, 'rawIncome' => $rawIncome, 'rate' => $rate, 'annualRate' => $yearRate];
+        if ($isOtherDate) {
+            return $return;
+        } else {
+            return $yearRate;
+        }
+    }
+    
+    public function getRealIncome(){
+        return $this->getAnnualRate(true)['realIncome'];
+    }
+    public function getRate(){
+        return $this->getAnnualRate(true)['rate'];
     }
 
     /**
@@ -152,46 +163,66 @@ class GuPiaoCal
      * @param $yearRate float 0.01 mean 1%
      * @return array
      * */
-    public function getSoldPriceByAnnualRate($yearRate, $accuracy = 0.01)
+    public function getSoldPriceByAnnualRate($yearRate, $isOverwrite = false, $accuracyRate = 0.00001, $accuracyMoney = 0.001)
     {
+        $originalNowPrice = $this->nowPrice;
         $days = $this->getHoldDays();
         $rate = $yearRate * $days / $this->thisYearGupiaoDays;
-        $rawPrice = (1 + 2 * $rate) * $this->historyPrice;
-        $originalHistoryPrice=$this->historyPrice;
-        $originalNowPrice=$this->nowPrice;
-        for ($times=0;$times<100;$times++){
-            $tempAnnualRateArray=$this->getAnnualRate();
-            $tempAnnualRate=$tempAnnualRateArray['annualRate'];
-            if($tempAnnualRateArray>$yearRate){
-
-            }else{
-                
+        $highPrice = (1 + 3 * $rate) * $this->historyPrice;
+        $lowPrice = $this->historyPrice;
+        $middlePrice = ($highPrice + $lowPrice) / 2;
+        for ($times = 0; $times < 100; $times++) {
+            $this->nowPrice = $middlePrice;
+            $tempAnnualRate = $this->getAnnualRate();
+            if ($tempAnnualRate > $yearRate) {
+                $highPrice = $middlePrice;
+            } else {
+                $lowPrice = $middlePrice;
+            }
+            $middlePrice = ($highPrice + $lowPrice) / 2;
+            if ($highPrice - $lowPrice < $accuracyMoney || abs($tempAnnualRate - $yearRate) < $accuracyRate) {
+                break;
             }
         }
-
-        $realIncome = $rate * $this->historyPrice * $this->holdNum;
-        $realPrice = ($realIncome + $fee) / $this->holdNum;
-        $rawPrice = (1 + $rate) * $this->historyPrice;
-        return ['realIncome' => $realIncome, 'realPrice' => $realPrice, 'rate' => $rate, 'rawPrice' => $rawPrice, 'rawIncome' => $realIncome + $fee];
+        if ($isOverwrite) {
+            $this->nowPrice = $middlePrice;
+        } else {
+            $this->nowPrice = $originalNowPrice;
+        }
+        return $middlePrice;
     }
 
     //通过锁定价格得到每一天的收益率
-    public function getAnnualRatesByLockedPrice($startDate = null, $days = 30, $key = '')
+    public function getAnnualRatesByLockedPrice($lockedPrice = null, $days = 30, $startDate = null)
     {
         if (empty($startDate)) {
             $startDate = $this->timeToInt;
         } else {
             $startDate = strtotime($startDate);
         }
-        if (abs(time() - $startDate) / 86400 < 360) {
-            return false;
+        $annualRates = [];
+        for ($i = 0; $i <= $days; $i++) {
+            $this->timeToInt = $startDate + 86400 * $i;
+            $annualRates[$i] = $this->getAnnualRate();
         }
+        return $annualRates;
     }
 
 
-    //通过锁定价格得到每一天的收益率
-    public function getPricesByLockedAnnualRate($startDate = null, $days = 30, $key = '')
+    //通过锁定收益得到每一天的价格
+    public function getPricesByLockedAnnualRate($annualRate = null, $days = 30, $startDate = null)
     {
+        if (empty($startDate)) {
+            $startDate = $this->timeToInt;
+        } else {
+            $startDate = strtotime($startDate);
+        }
+        $prices = [];
+        for ($i = 0; $i <= $days; $i++) {
+            $this->timeToInt = $startDate + 86400 * $i;
+            $prices[$i] = $this->getSoldPriceByAnnualRate($annualRate);
+        }
+        return $prices;
 
     }
 

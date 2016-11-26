@@ -1,11 +1,11 @@
 <?php
 
-namespace common\models\holiday;
+namespace frontend\models\runconf;
 
 use Yii;
 
 /**
- * This is the model class for table "raw_holiday".
+ * This is the model class for table "gp_holiday_real".
  *
  * @property integer $id
  * @property string $date_str
@@ -13,14 +13,14 @@ use Yii;
  * @property string $type
  * @property string $updated_at
  */
-class RawHoliday extends \yii\db\ActiveRecord
+class HolidayReal extends \common\models\config\HolidayReal
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'gp_raw_holiday';
+        return 'gp_holiday_real';
     }
 
     /**

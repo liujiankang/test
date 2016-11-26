@@ -41,6 +41,12 @@ return [
         'user' => [
             'class' => 'frontend\module\user\User',
         ],
+        'runconf' => [
+            'class' => 'frontend\module\runconf\Module',
+        ],
+        'runinit' => [
+            'class' => 'frontend\modules\runinit\Module',
+        ],
     ],
     'params' => $params,
 ];

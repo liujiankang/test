@@ -10,4 +10,5 @@ return [
             'showScriptName' => false,
         ],
     ],
+    'timeZone'=>'Asia/Chongqing',
 ];

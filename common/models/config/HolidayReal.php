@@ -1,27 +1,26 @@
 <?php
 
-namespace frontend\models\user;
+namespace common\models\config;
 
 use Yii;
 
 /**
- * This is the model class for table "gp_charge".
+ * This is the model class for table "gp_holiday_real".
  *
  * @property integer $id
- * @property integer $uid
- * @property string $amount
  * @property string $date_str
  * @property integer $date_int
- * @property integer $status
+ * @property string $type
+ * @property string $updated_at
  */
-class Charge extends \common\models\user\Charge
+class HolidayReal extends \common\models\BaseModel
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'gp_charge';
+        return 'gp_holiday_real';
     }
 
     /**
@@ -30,10 +29,10 @@ class Charge extends \common\models\user\Charge
     public function rules()
     {
         return [
-            [['uid', 'date_int', 'status'], 'integer'],
-            [['amount', 'date_int'], 'required'],
-            [['amount'], 'number'],
-            [['date_str'], 'safe'],
+            [['date_int'], 'integer'],
+            [['updated_at'], 'safe'],
+            [['date_str'], 'string', 'max' => 10],
+            [['type'], 'string', 'max' => 20],
         ];
     }
 
@@ -44,11 +43,10 @@ class Charge extends \common\models\user\Charge
     {
         return [
             'id' => 'ID',
-            'uid' => 'Uid',
-            'amount' => 'Amount',
             'date_str' => 'Date Str',
             'date_int' => 'Date Int',
-            'status' => 'Status',
+            'type' => 'Type',
+            'updated_at' => 'Updated At',
         ];
     }
 }
