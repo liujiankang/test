@@ -39,10 +39,10 @@ return [
     ],
     'modules' => [
         'user' => [
-            'class' => 'frontend\module\user\User',
+            'class' => 'frontend\modules\user\User',
         ],
         'runconf' => [
-            'class' => 'frontend\module\runconf\Module',
+            'class' => 'frontend\modules\runconf\Module',
         ],
         'runinit' => [
             'class' => 'frontend\modules\runinit\Module',

@@ -1,17 +1,18 @@
 <?php
 
-namespace frontend\module\runconf\controllers;
+namespace frontend\modules\runconf\controllers;
 
 use Yii;
-use frontend\models\runconf\HolidayRaw;
+use frontend\models\runconf\HolidayReal;
+use frontend\models\runconf\HolidayRealSearch;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * HolidayRawController implements the CRUD actions for HolidayRaw model.
+ * HolidayRealController implements the CRUD actions for HolidayReal model.
  */
-class HolidayRawController extends BaseController
+class HolidayRealController extends BaseController
 {
     /**
      * @inheritdoc
@@ -29,12 +30,12 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Lists all HolidayRaw models.
+     * Lists all HolidayReal models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new HolidayRaw();
+        $searchModel = new HolidayReal();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -44,7 +45,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Displays a single HolidayRaw model.
+     * Displays a single HolidayReal model.
      * @param integer $id
      * @return mixed
      */
@@ -56,13 +57,13 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Creates a new HolidayRaw model.
+     * Creates a new HolidayReal model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new HolidayRaw();
+        $model = new HolidayReal();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -74,7 +75,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Updates an existing HolidayRaw model.
+     * Updates an existing HolidayReal model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -93,7 +94,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Deletes an existing HolidayRaw model.
+     * Deletes an existing HolidayReal model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -106,15 +107,15 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Finds the HolidayRaw model based on its primary key value.
+     * Finds the HolidayReal model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return HolidayRaw the loaded model
+     * @return HolidayReal the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = HolidayRaw::findOne($id)) !== null) {
+        if (($model = HolidayReal::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

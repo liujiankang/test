@@ -1,18 +1,17 @@
 <?php
 
-namespace frontend\module\user\controllers;
+namespace frontend\modules\runconf\controllers;
 
 use Yii;
-use frontend\models\user\Withdraw;
-use frontend\models\user\WithdrawSearch;
-use yii\web\Controller;
+use frontend\models\runconf\HolidayRaw;
+use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * WithdrawController implements the CRUD actions for Withdraw model.
+ * HolidayRawController implements the CRUD actions for HolidayRaw model.
  */
-class WithdrawController extends Controller
+class HolidayRawController extends BaseController
 {
     /**
      * @inheritdoc
@@ -30,12 +29,12 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Lists all Withdraw models.
+     * Lists all HolidayRaw models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new WithdrawSearch();
+        $searchModel = new HolidayRaw();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +44,7 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Displays a single Withdraw model.
+     * Displays a single HolidayRaw model.
      * @param integer $id
      * @return mixed
      */
@@ -57,15 +56,37 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Creates a new Withdraw model.
+     * Creates a new HolidayRaw model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Withdraw();
-
+        $model = new HolidayRaw();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $post = Yii::$app->request->post('HolidayRaw');
+            if (isset($post['addDays']) &&$post['addDays']>1) {
+                $addDays =$post['addDays'];
+                $date_str=$post['date_str'];
+                $date_int=$post['date_int'];
+                $type=$post['type'];
+                if(strtotime($date_str)>1){
+                    $date_int=strtotime($date_str);
+                }
+                if($date_int<10){
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                $data=[];
+                for ($i = 1; $i < $addDays; $i++) {
+                   $tempInt=$date_int+$i*86400;
+                    $data[]=[date('Y-m-d',$tempInt),$tempInt,$type];
+                }
+                    HolidayRaw::find()
+                        ->createCommand()
+                        ->batchInsert(HolidayRaw::tableName(),['date_str','date_int','type'],$data)
+                        ->execute();
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -75,7 +96,7 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Updates an existing Withdraw model.
+     * Updates an existing HolidayRaw model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +115,7 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Deletes an existing Withdraw model.
+     * Deletes an existing HolidayRaw model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +128,15 @@ class WithdrawController extends Controller
     }
 
     /**
-     * Finds the Withdraw model based on its primary key value.
+     * Finds the HolidayRaw model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Withdraw the loaded model
+     * @return HolidayRaw the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Withdraw::findOne($id)) !== null) {
+        if (($model = HolidayRaw::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

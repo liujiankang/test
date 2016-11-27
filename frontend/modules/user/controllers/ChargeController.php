@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\module\user\controllers;
+namespace frontend\modules\user\controllers;
 
 use Yii;
 use frontend\models\user\Charge;

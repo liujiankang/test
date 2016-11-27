@@ -3,50 +3,64 @@
 namespace frontend\models\runconf;
 
 use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
 
-/**
- * This is the model class for table "gp_holiday_real".
- *
- * @property integer $id
- * @property string $date_str
- * @property integer $date_int
- * @property string $type
- * @property string $updated_at
- */
 class HolidayReal extends \common\models\config\HolidayReal
 {
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'gp_holiday_real';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
-            [['date_int'], 'integer'],
-            [['updated_at'], 'safe'],
-            [['date_str'], 'string', 'max' => 10],
-            [['type'], 'string', 'max' => 20],
+            [['id', 'date_int','status'], 'integer'],
+            [['date_str', 'type', 'updated_at'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function scenarios()
     {
-        return [
-            'id' => 'ID',
-            'date_str' => 'Date Str',
-            'date_int' => 'Date Int',
-            'type' => 'Type',
-            'updated_at' => 'Updated At',
-        ];
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = HolidayReal::find();
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'status' => $this->status,
+            'date_int' => $this->date_int,
+            'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'date_str', $this->date_str])
+            ->andFilterWhere(['like', 'type', $this->type]);
+
+        return $dataProvider;
     }
 }

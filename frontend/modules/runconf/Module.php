@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\module\runconf;
+namespace frontend\modules\runconf;
 
 /**
  * runcof module definition class
@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'frontend\module\runconf\controllers';
+    public $controllerNamespace = 'frontend\modules\runconf\controllers';
 
     /**
      * @inheritdoc

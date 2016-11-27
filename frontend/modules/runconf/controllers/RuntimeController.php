@@ -1,18 +1,17 @@
 <?php
 
-namespace frontend\module\runconf\controllers;
+namespace frontend\modules\runconf\controllers;
 
-use Yii;
-use frontend\models\runconf\HolidayReal;
-use frontend\models\runconf\HolidayRealSearch;
 use frontend\controllers\BaseController;
-use yii\web\NotFoundHttpException;
+use frontend\models\runconf\RuntimeConfig;
+use Yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
- * HolidayRealController implements the CRUD actions for HolidayReal model.
+ * RuntimeController implements the CRUD actions for RuntimeConfig model.
  */
-class HolidayRealController extends BaseController
+class RuntimeController extends BaseController
 {
     /**
      * @inheritdoc
@@ -30,12 +29,12 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Lists all HolidayReal models.
+     * Lists all RuntimeConfig models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new HolidayRealSearch();
+        $searchModel = new RuntimeConfig();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +44,7 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Displays a single HolidayReal model.
+     * Displays a single RuntimeConfig model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +56,13 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Creates a new HolidayReal model.
+     * Creates a new RuntimeConfig model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new HolidayReal();
+        $model = new RuntimeConfig();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -75,7 +74,7 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Updates an existing HolidayReal model.
+     * Updates an existing RuntimeConfig model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +93,7 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Deletes an existing HolidayReal model.
+     * Deletes an existing RuntimeConfig model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +106,15 @@ class HolidayRealController extends BaseController
     }
 
     /**
-     * Finds the HolidayReal model based on its primary key value.
+     * Finds the RuntimeConfig model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return HolidayReal the loaded model
+     * @return RuntimeConfig the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = HolidayReal::findOne($id)) !== null) {
+        if (($model = RuntimeConfig::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

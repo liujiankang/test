@@ -11,6 +11,7 @@ use Yii;
  * @property string $date_str
  * @property integer $date_int
  * @property string $type
+ * @property integer $status
  * @property string $updated_at
  */
 class HolidayReal extends \common\models\BaseModel
@@ -29,7 +30,7 @@ class HolidayReal extends \common\models\BaseModel
     public function rules()
     {
         return [
-            [['date_int'], 'integer'],
+            [['date_int','status'], 'integer'],
             [['updated_at'], 'safe'],
             [['date_str'], 'string', 'max' => 10],
             [['type'], 'string', 'max' => 20],
@@ -46,6 +47,7 @@ class HolidayReal extends \common\models\BaseModel
             'date_str' => 'Date Str',
             'date_int' => 'Date Int',
             'type' => 'Type',
+            'status' => 'Status',
             'updated_at' => 'Updated At',
         ];
     }

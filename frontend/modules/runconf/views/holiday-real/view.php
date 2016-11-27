@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\user\Withdraw */
+/* @var $model frontend\models\runconf\HolidayReal */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Withdraws', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Holiday Reals', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="withdraw-view">
+<div class="holiday-real-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,11 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'uid',
-            'amount',
             'date_str',
             'date_int',
+            'type',
             'status',
+            'updated_at',
         ],
     ]) ?>
 

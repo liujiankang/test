@@ -7,7 +7,7 @@ use yii\db\Query;
 /**
  * Site controller
  */
-class SiteController extends BasicController
+class Site0Controller extends BasicController
 {
     
     public function actionIndex()
