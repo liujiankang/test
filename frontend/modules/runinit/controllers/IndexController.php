@@ -2,9 +2,11 @@
 
 namespace frontend\modules\runinit\controllers;
 
+use common\servers\eastmoney\GupiaoNameSynchro;
 use common\servers\HolidayRawUpdate;
 use yii\web\Controller;
 use common\servers\HolidayRealInit;
+
 /**
  * Default controller for the `runinit` module
  */
@@ -31,4 +33,12 @@ class IndexController extends Controller
     }
     //初始化数据库表
     //初始化数据
+
+    public function actionGupiaoName()
+    {
+        echo $this->uniqueId . 'update';
+        (new GupiaoNameSynchro())->actionRun();
+        echo $this->uniqueId . 'update done';
+        return $this->render('@app/modules/runinit/views/default/index');
+    }
 }
