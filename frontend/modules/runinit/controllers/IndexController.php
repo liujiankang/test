@@ -34,7 +34,7 @@ class IndexController extends Controller
     //初始化数据库表
     //初始化数据
 
-    public function actionGupiaoName()
+    public function actionGupiaoCode()
     {
         echo $this->uniqueId . 'update';
         (new GupiaoNameSynchro())->actionRun();
