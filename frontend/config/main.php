@@ -47,6 +47,9 @@ return [
         'runinit' => [
             'class' => 'frontend\modules\runinit\Module',
         ],
+        'gupiao' => [
+            'class' => 'frontend\modules\gupiao\Module',
+        ],
     ],
     'params' => $params,
 ];

@@ -9,6 +9,7 @@ namespace common\servers\eastmoney;
  */
 use common\lib\http\PhpTransfer;
 use common\lib\log\LogText;
+use common\models\gupiao\GupiaoCode;
 use common\servers\eastmoney\BaseServer;
 use yii\debug\models\search\Debug;
 use yii\helpers\Json;
@@ -49,18 +50,26 @@ class GupiaoNameSynchro extends BaseServer
             $emptyTime = 0;
             for ($page = 1; $page < 100; $page++) {
                 $content = $this->getOneContent($key, $page);
-                if (empty($content)) {
+                if (empty($content) || !is_array($content) || count($content)<1) {
                     $emptyTime++;
                     if ($emptyTime > 2) {
                         break;
                     } else {
                         continue;
                     }
+                }else{
+                    $result= $this->updateGpCode($key,$content);
+                    if($result===false){
+                        $emptyTime++;
+                        LogText::log($content,'addCodeError');
+                    }else{
+                        echo "succsess add $result codes";
+                    }
                 }
                 LogText::log($content,'content');
-                var_dump($content);
-                die;
-                return true;
+                var_dump(end($content));
+                $sleep=rand(0,4);
+                sleep($sleep);
             }
         }
     }
@@ -69,8 +78,7 @@ class GupiaoNameSynchro extends BaseServer
     {
         $url = $this->getUrl($type, $page);
         $rawContent = $this->getContent($url);
-        $gpArray= $this->gpCodeDecode($rawContent);
-        $this->updateGpCode($type,$gpArray);
+        return $gpArray= $this->gpCodeDecode($rawContent);
     }
 
     public function getContent($url = null, $params = null)
@@ -79,7 +87,31 @@ class GupiaoNameSynchro extends BaseServer
     }
 
     public function updateGpCode($type,$codeArray){
-        
+        $gupiaoCodes=GupiaoCode::find()
+            ->select('code')
+            ->where(['type'=>$type,'code'=>$codeArray])
+            ->asArray()
+            ->column();
+        $addCodes=[];
+        if($gupiaoCodes && is_array($gupiaoCodes) && count($gupiaoCodes)>0){
+            foreach ($codeArray as $code){
+                if(!in_array($code,$gupiaoCodes)){
+                    array_push($addCodes,[$code,$type]);
+                }
+            }
+        }else{
+            foreach ($codeArray as $code){
+                array_push($addCodes,[$code,$type]);
+            }
+        }
+
+        if(count($addCodes)>1){
+            return GupiaoCode::find()
+                ->createCommand()
+                ->batchInsert(GupiaoCode::tableName(),['code','type'],$addCodes)
+                ->execute();
+        }
+        return 0;
     }
 
     public function getUrl($type, $page)
@@ -91,7 +123,8 @@ class GupiaoNameSynchro extends BaseServer
     public function gpCodeDecode($content)
     {
         //$content= iconv("gb2312", "UTF-8" , $content);
-        $content= iconv("GBK", "UTF-8" , $content);
+        //$content= iconv("GBK", "UTF-8//TRANSLIT" , $content);
+        $content= mb_convert_encoding ($content, "UTF-8");
         //$content= iconv("gb18030", "utf-8//TRANSLIT" , $content);
         $rawArray = Json::decode($content, true);
         if (!isset($rawArray['data']) || !is_array($rawArray['data']) || count($rawArray['data']) < 1 || !isset($rawArray['data'][0]['stockcode'])) {
