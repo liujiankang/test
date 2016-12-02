@@ -23,6 +23,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status') ?>
 
+    <?= $form->field($model, 'name') ?>
     <?= $form->field($model, 'date_str') ?>
 
     <?php // echo $form->field($model, 'date_int') ?>

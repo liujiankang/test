@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->textInput() ?>
 
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    
     <?= $form->field($model, 'date_str')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'date_int')->textInput() ?>

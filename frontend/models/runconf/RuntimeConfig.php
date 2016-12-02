@@ -67,6 +67,7 @@ class RuntimeConfig extends \common\models\config\RuntimeConfig
 
         $query->andFilterWhere(['like', 'model', $this->model])
             ->andFilterWhere(['like', 'action', $this->action])
+            ->andFilterWhere(['like', 'detail', $this->detail])
             ->andFilterWhere(['like', 'describe', $this->describe]);
 
         return $dataProvider;

@@ -15,6 +15,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'model')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'action')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'detail')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'last_time')->textInput() ?>
 

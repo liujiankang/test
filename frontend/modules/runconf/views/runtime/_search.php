@@ -20,6 +20,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'model') ?>
 
     <?= $form->field($model, 'action') ?>
+    <?= $form->field($model, 'detail') ?>
 
     <?= $form->field($model, 'last_time') ?>
 

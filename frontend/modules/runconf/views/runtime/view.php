@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'model',
             'action',
+            'detail',
             'last_time:datetime',
             'describe',
         ],

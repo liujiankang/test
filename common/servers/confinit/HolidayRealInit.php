@@ -1,5 +1,5 @@
 <?php
-namespace common\servers;
+namespace common\servers\confinit;
 
 use common\models\config\HolidayReal;
 

@@ -11,6 +11,7 @@ use Yii;
  * @property string $code
  * @property string $type
  * @property integer $status
+ * @property string $name
  * @property string $date_str
  * @property integer $date_int
  * @property string $creat_at
@@ -36,7 +37,7 @@ class GupiaoCode extends \common\models\BaseModel
             [['status', 'date_int'], 'integer'],
             [['creat_at', 'update_at'], 'safe'],
             [['code', 'type'], 'string', 'max' => 8],
-            [['date_str'], 'string', 'max' => 10],
+            [['date_str','name'], 'string', 'max' => 10],
         ];
     }
 
@@ -50,9 +51,10 @@ class GupiaoCode extends \common\models\BaseModel
             'code' => 'Code',
             'type' => 'Type',
             'status' => 'Status',
+            'name' => 'Name',
             'date_str' => 'Date Str',
             'date_int' => 'Date Int',
-            'creat_at' => 'Creat At',
+            'create_at' => 'Create At',
             'update_at' => 'Update At',
         ];
     }

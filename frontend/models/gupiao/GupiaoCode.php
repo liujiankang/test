@@ -27,7 +27,7 @@ class GupiaoCode extends \common\models\gupiao\GupiaoCode
     {
         return [
             [['id', 'status', 'date_int'], 'integer'],
-            [['code', 'type', 'date_str', 'create_at', 'update_at'], 'safe'],
+            [['code', 'type', 'date_str', 'name', 'create_at', 'update_at'], 'safe'],
         ];
     }
 
@@ -75,6 +75,7 @@ class GupiaoCode extends \common\models\gupiao\GupiaoCode
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'type', $this->type])
             ->andFilterWhere(['like', 'date_str', $this->date_str]);
 

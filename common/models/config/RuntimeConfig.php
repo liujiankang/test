@@ -11,6 +11,8 @@ use Yii;
  * @property string $model
  * @property string $action
  * @property integer $last_time
+ * @property integer $status
+ * @property string $detail
  * @property string $describe
  */
 class RuntimeConfig extends \common\models\BaseModel
@@ -29,8 +31,9 @@ class RuntimeConfig extends \common\models\BaseModel
     public function rules()
     {
         return [
-            [['action', 'last_time'], 'required'],
-            [['last_time'], 'integer'],
+            [['action', 'last_time', 'status'], 'required'],
+            [['last_time', 'status'], 'integer'],
+            [['detail'], 'string'],
             [['model', 'action', 'describe'], 'string', 'max' => 20],
         ];
     }
@@ -45,6 +48,8 @@ class RuntimeConfig extends \common\models\BaseModel
             'model' => 'Model',
             'action' => 'Action',
             'last_time' => 'Last Time',
+            'status' => 'Status',
+            'detail' => '保留现场信息',
             'describe' => 'Describe',
         ];
     }
