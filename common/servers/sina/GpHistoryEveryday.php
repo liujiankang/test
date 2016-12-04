@@ -5,11 +5,11 @@
  * Date: 2016/12/1
  * Time: 23:01
  */
-namespace common\servers\wangyi;
+namespace common\servers\sina;
 
 use common\lib\log\LogText;
 use common\models\gupiao\GupiaoCode;
-use common\models\gupiao\GupiaoEverydayWangyi as GupiaoEveryModel;
+use common\models\gupiao\GupiaoEverydaySina as GupiaoEveryModel;
 use common\servers\BaseService;
 use common\lib\http\PhpTransfer;
 use common\models\config\RuntimeConfig;
@@ -24,7 +24,7 @@ class GpHistoryEveryday extends BaseService
     public $isFromFile = false;
     public $isRemoveFirstLine = true;
     public $arrayBlockSize = 100;
-    public $gpActon = 'history_everyday_wangyi';
+    public $gpActon = 'history_everyday_sina';
     public $titleMap = [0 => "日期", 1 => "股票代码", 2 => "名称", 3 => "收盘价", 4 => "最高价", 5 => "最低价", 6 => "开盘价", 7 => "前收盘", 8 => "涨跌额", 9 => "涨跌幅", 10 => "换手率", 11 => "成交量", 12 => "成交金额", 13 => "总市值", 14 => "流通市值"];
     public $keyMap = [0 => "date_str", 1 => 'code', 2 => 'gp_name', 3 => "close_price", 4 => "high_price", 5 => "low_price", 6 => "open_price", 7 => "last_price", 8 => "shake_value", 9 => "shake_percent", 10 => "turnover_percent", 11 => "deal_number", 12 => "deal_money", 13 => "all_market_value", 14 => "liutong_market_value"];
     public $addField = [0 => "date_str", 1 => 'gp_id', 3 => "close_price", 4 => "high_price", 5 => "low_price", 6 => "open_price", 7 => "last_price", 8 => "shake_value", 9 => "shake_percent", 10 => "turnover_percent", 11 => "deal_number", 12 => "deal_money", 13 => "all_market_value", 14 => "liutong_market_value"];
@@ -39,9 +39,10 @@ class GpHistoryEveryday extends BaseService
     public function actionRun($isByFile = false)
     {
         //$this->writeAllCode();
-        //$this->isFromFile = $isByFile;
+        $this->isFromFile = $isByFile;
         $this->isFromFile = true;
-        $this->writeAllContentByGpId();
+        $this->writeOneContent('000001');
+        //$this->writeAllContent();
     }
 
     /**
@@ -59,35 +60,35 @@ class GpHistoryEveryday extends BaseService
         fclose($file);
     }
 
-    public function writeAllContentByGpId()
+    public function writeAllContent()
     {
         $errorNum = 0;
         $systemErrorNum = 0;
         $hadDeal = RuntimeConfig::findOne(['action' => $this->gpActon]);
         $nowMaxId = GupiaoCode::find()->max('id');
-        $lastDeal = json_decode($hadDeal->detail, true);
+        $lastDeal = json_decode($hadDeal->detail);
+        $thisDeal = [];
         if (empty($lastDeal) or !isset($lastDeal['lastId'])) {
-            $lastDeal['lastId'] = 0;
+            $thisDeal = ['lastId' => 1, 'maxId' => $nowMaxId];
         } else {
-
+            $thisDeal['lastId'] = $lastDeal['lastId'] + 1;
         }
 
-        for ($gpId = $lastDeal['lastId'] + 1; $gpId <= $nowMaxId; $gpId++) {
+        for ($gpId = $thisDeal['lastId']; $gpId < $nowMaxId; $gpId++) {
             $gupiao = GupiaoCode::findOne(['id' => $gpId]);
             if (empty($gupiao)) {
                 LogText::log($gpId, 'gupiao_history_everyday_error');
                 $systemErrorNum++;
             } else {
                 $isWrite = $this->writeOneContent($gupiao->code, $gupiao->id);
+
                 if ($isWrite === false) {
                     LogText::log($gupiao->code, 'save_content_error');
                     $systemErrorNum++;
                 } else {
-                    $lastDeal['lastId'] = $gpId;
-                    $hadDeal->detail = json_encode($lastDeal);
-                    if ($hadDeal->save(false) == false) {
-                        LogText::log([$gupiao->code, $hadDeal->getErrors()], 'save_config_error' . $this->gpActon);
-                    };
+                    $thisDeal['lastId'] = $gpId;
+                    $hadDeal->detail = json_encode($thisDeal);
+                    $hadDeal->save();
                     LogText::log($gupiao->code, 'save_content_success');
                 }
             }
@@ -96,10 +97,6 @@ class GpHistoryEveryday extends BaseService
                 echo 'exit at middle process';
                 return false;
             }
-            sleep(3);
-            if ($lastDeal['lastId'] % 200 == 3) {
-                sleep(3);
-            }
         }
         echo 'done';
         return true;
@@ -107,9 +104,7 @@ class GpHistoryEveryday extends BaseService
 
     public function writeOneContent($code, $gpId = null)
     {
-        if (GupiaoEveryModel::findOne(['gp_id' => $gpId])) {
-            return 0;//已经插入过了
-        }
+
         if ($this->isFromFile) {
             $content = $this->getOneContentByFile($code);
         } else {
@@ -192,44 +187,28 @@ class GpHistoryEveryday extends BaseService
         } else {
             $blockContent[0] = $content;
         }
-        $isStrict = GupiaoEveryModel::findOne(['gp_id' => $gp_id]);
         foreach ($blockContent as $block) {
-            if ($isStrict) {
-                $isHave = GupiaoEveryModel::find()
-                    ->select('date_str')
-                    ->where(['gp_id' => $gp_id, 'date_str' => array_column($block, 'date_str')])
-                    ->column();
-                $hadBlock = [];
-                $unHaveBlock = [];
-                foreach ($block as $line) {
-                    if ($isHave && is_array($isHave) && in_array($line['date_str'], $isHave)) {
-                        array_push($hadBlock, $line);
-                    } else {
-                        $line['gp_id'] = $gp_id;
-                        $tempArray = [];
-                        foreach ($this->addField as $field) {
-                            array_push($tempArray, $line[$field]);
-                        }
-                        array_push($unHaveBlock, $tempArray);
-                    }
-                }
-                if (count($hadBlock) > 0) {
-                    LogText::log($hadBlock, 'this_gp_everyday_overwrite');
-                }
-            } else {
-                $unHaveBlock = [];
-                foreach ($block as $line) {
+            $isHave = GupiaoEveryModel::find()
+                ->select('date_str')
+                ->where(['gp_id' => $gp_id, 'date_str' => array_column($block, 'date_str')])
+                ->column();
+            $hadBlock = [];
+            $unHaveBlock = [];
+            foreach ($block as $line) {
+                if ($isHave && is_array($isHave) && in_array($line['date_str'], $isHave)) {
+                    array_push($hadBlock, $line);
+                }else{
                     $line['gp_id'] = $gp_id;
-                    $tempArray = [];
-                    foreach ($this->addField as $field) {
-                        array_push($tempArray, $line[$field]);
+                    $tempArray=[];
+                    foreach ($this->addField as $field){
+                        array_push($tempArray,$line[$field]);
                     }
                     array_push($unHaveBlock, $tempArray);
                 }
             }
+            LogText::log($hadBlock, 'this_gp_everyday_overwrite');
 
-
-            if (!empty($unHaveBlock) && count($unHaveBlock) > 0) {
+            if(!empty($unHaveBlock) && count($unHaveBlock)>0){
                 $result = GupiaoEveryModel::find()
                     ->createCommand()
                     ->batchInsert(GupiaoEveryModel::tableName(), $this->addField, $unHaveBlock)
@@ -240,8 +219,8 @@ class GpHistoryEveryday extends BaseService
                     return false;
                 }
             }
+           return true;
         }
-        return true;
     }
 
     public function gpCodeDecode($content)
@@ -251,7 +230,7 @@ class GpHistoryEveryday extends BaseService
         //$content3= mb_convert_encoding ($content, "UTF-8");
         //$content4= iconv("gb18030", "utf-8//TRANSLIT" , $content);
         $rawArray = explode("\r\n", $content);
-        if (count($rawArray) >= 1) {
+        if (count($rawArray) > 10) {
             foreach ($rawArray as &$val) {
                 if (strpos($val, ',')) {
                     $val = explode(',', $val);
@@ -263,32 +242,23 @@ class GpHistoryEveryday extends BaseService
                     $val = explode(',', $val);
                 }
             }
-            if ($this->isRemoveFirstLine) {
-                array_shift($rawArray);
-            }
-            foreach ($rawArray as $key => $val) {
-                $lineMap = [];
-                if (!is_array($val)) {
-                    if ($key >= (count($rawArray) - 2) && $key != 0) {
-                        break;//最后一行
-                    } else {
-                        return false;
-                    }
-                }
-                foreach ($this->keyMap as $key2 => $val2) {
-                    if (in_array($key2, $this->keyFloatFormat)) {
-                        $lineMap[$val2] = (float)$val[$key2];
-                    } else {
-                        $lineMap[$val2] = $val[$key2];
-                    }
-                }
-                $rawArray[$key] = $lineMap;
-            }
-            return $rawArray;
-        } else {
-            return false;
         }
-        //var_dump($rawArray[0]);
+        if ($this->isRemoveFirstLine && count($rawArray) > 10) {
+            array_shift($rawArray);
+        }
+        foreach ($rawArray as $key => $val) {
+            $lineMap = [];
+            foreach ($this->keyMap as $key2 => $val2) {
+                if (in_array($key2, $this->keyFloatFormat)) {
+                    $lineMap[$val2] = (float)$val[$key2];
+                } else {
+                    $lineMap[$val2] = $val[$key2];
+                }
+            }
+            $rawArray[$key] = $lineMap;
+        }
+        var_dump($rawArray[0]);
+        return $rawArray;
     }
 
 

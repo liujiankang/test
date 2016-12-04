@@ -46,7 +46,7 @@ class IndexController extends Controller
     public function actionGupiaoHistoryEveryday()
     {
         echo $this->uniqueId . 'update';
-        (new GpHistoryEveryday())->actionRun();
+        (new GpHistoryEveryday())->actionRun(isset($_GET['byFile']));
         echo $this->uniqueId . 'update done';
         return $this->render('@app/modules/runinit/views/default/index');
     }

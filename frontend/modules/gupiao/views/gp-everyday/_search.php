@@ -25,31 +25,31 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'close_price') ?>
 
-    <?php // echo $form->field($model, 'low_price') ?>
+    <?php  echo $form->field($model, 'low_price') ?>
 
-    <?php // echo $form->field($model, 'high_price') ?>
+    <?php  echo $form->field($model, 'high_price') ?>
 
-    <?php // echo $form->field($model, 'last_price') ?>
+    <?php  echo $form->field($model, 'last_price') ?>
 
-    <?php // echo $form->field($model, 'tunover_persent') ?>
+    <?php  echo $form->field($model, 'turnover_percent') ?>
 
-    <?php // echo $form->field($model, 'deal_number') ?>
+    <?php  echo $form->field($model, 'deal_number') ?>
 
-    <?php // echo $form->field($model, 'deal_money') ?>
+    <?php  echo $form->field($model, 'deal_money') ?>
 
-    <?php // echo $form->field($model, 'all_market_value') ?>
+    <?php  echo $form->field($model, 'all_market_value') ?>
 
-    <?php // echo $form->field($model, 'liutong_market_value') ?>
+    <?php  echo $form->field($model, 'liutong_market_value') ?>
 
-    <?php // echo $form->field($model, 'shake_persent') ?>
+    <?php  echo $form->field($model, 'shake_percent') ?>
 
-    <?php // echo $form->field($model, 'shake_value') ?>
+    <?php  echo $form->field($model, 'shake_value') ?>
 
-    <?php // echo $form->field($model, 'detail_start_id') ?>
+    <?php  echo $form->field($model, 'detail_start_id') ?>
 
-    <?php // echo $form->field($model, 'detail_end_id') ?>
+    <?php  echo $form->field($model, 'detail_end_id') ?>
 
-    <?php // echo $form->field($model, 'updated_at') ?>
+    <?php  echo $form->field($model, 'updated_at') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

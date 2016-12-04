@@ -28,7 +28,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'last_price')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'tunover_persent')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'turnover_percent')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'deal_number')->textInput(['maxlength' => true]) ?>
 
@@ -38,7 +38,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'liutong_market_value')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'shake_persent')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'shake_percent')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'shake_value')->textInput(['maxlength' => true]) ?>
 

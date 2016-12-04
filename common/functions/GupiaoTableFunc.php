@@ -1,34 +1,25 @@
 <?php
 namespace common\functions;
 use yii\base\Component;
-
+use Yii;
 /**
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2016/11/12
  * Time: 23:18
  */
-class GupiaoTable extends Component{
-    function ActionCreateTable(){
+class GupiaoTableFunc extends Component{
+    
+    public $gpDetailDb;
+    function createTable($code,$type){
         
     }
-    public $storeDb;
-
+    
     public function init()
     {
         parent::init();
-        $this->storeDb=Yii::$app->StoreDb;
+        $this->gpDetailDb=Yii::$app->dbDaily;
     }
-
-    public function actionRun(){
-        echo 'hello word';
-    }
-
-    public function insertSH(){
-
-    }
-
-
 
     public function creatBasicTable($gupiaoNum,$gupiaoName){
         $str="CREATE TABLE IF NOT EXISTS `gp_daily_sum` (
@@ -56,7 +47,7 @@ class GupiaoTable extends Component{
 
     }
 
-    public function creatDailyTable($gupiaoNum,$gupiaoName){
+    public function createDailyTable($code,$prefix){
         $str="CREATE TABLE IF NOT EXISTS `gp_daily_detail_daima` (
               `id` int(11) NOT NULL,
               `chengjiao_time` time NOT NULL,

@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * GpEverdayController implements the CRUD actions for GupiaoEveryday model.
  */
-class GpEverdayController extends BaseController
+class GpEverydayController extends BaseController
 {
     /**
      * @inheritdoc

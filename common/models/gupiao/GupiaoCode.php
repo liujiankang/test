@@ -19,6 +19,11 @@ use Yii;
  */
 class GupiaoCode extends \common\models\BaseModel
 {
+    const STATUS_OPEN = 1;//正常
+    const STATUS_CLOSE = 2;//停牌
+    const STATUS_DIE = 3;//退市
+    const STATUS_CONVERT = 4;//转变为其他股票
+
     /**
      * @inheritdoc
      */
@@ -37,7 +42,7 @@ class GupiaoCode extends \common\models\BaseModel
             [['status', 'date_int'], 'integer'],
             [['creat_at', 'update_at'], 'safe'],
             [['code', 'type'], 'string', 'max' => 8],
-            [['date_str','name'], 'string', 'max' => 10],
+            [['date_str', 'name'], 'string', 'max' => 10],
         ];
     }
 
