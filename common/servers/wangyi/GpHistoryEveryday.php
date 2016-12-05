@@ -41,7 +41,7 @@ class GpHistoryEveryday extends BaseService
         //$this->writeAllCode();
         //$this->isFromFile = $isByFile;
         $this->isFromFile = true;
-        $this->writeAllContentByGpId();
+         $this->writeAllContentByGpId();
     }
 
     /**
@@ -84,9 +84,9 @@ class GpHistoryEveryday extends BaseService
                     $systemErrorNum++;
                 } else {
                     $lastDeal['lastId'] = $gpId;
-                    $hadDeal->detail = json_encode($lastDeal);
-                    if ($hadDeal->save(false) == false) {
-                        LogText::log([$gupiao->code, $hadDeal->getErrors()], 'save_config_error' . $this->gpActon);
+                    $resultConf=RuntimeConfig::updateAll(['detail'=>json_encode($lastDeal)],['action' => $this->gpActon]);
+                    if ($resultConf === false) {
+                        LogText::log([$gupiao->code, $lastDeal], 'save_config_error' . $this->gpActon);
                     };
                     LogText::log($gupiao->code, 'save_content_success');
                 }
@@ -96,9 +96,9 @@ class GpHistoryEveryday extends BaseService
                 echo 'exit at middle process';
                 return false;
             }
-            sleep(3);
-            if ($lastDeal['lastId'] % 200 == 3) {
-                sleep(3);
+            sleep(13);
+            if ($lastDeal['lastId'] % 50 == 3) {
+                sleep(30);
             }
         }
         echo 'done';

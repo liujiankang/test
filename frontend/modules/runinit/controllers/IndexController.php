@@ -3,6 +3,7 @@
 namespace frontend\modules\runinit\controllers;
 
 use common\servers\eastmoney\GupiaoNameSynchro;
+use common\servers\eastmoney\GupiaoOpenClosePriceSynchro;
 use common\servers\confinit\HolidayRawUpdate;
 use yii\web\Controller;
 use common\servers\confinit\HolidayRealInit;
@@ -46,7 +47,21 @@ class IndexController extends Controller
     public function actionGupiaoHistoryEveryday()
     {
         echo $this->uniqueId . 'update';
-        (new GpHistoryEveryday())->actionRun(isset($_GET['byFile']));
+        $result=(new GpHistoryEveryday())->actionRun(isset($_GET['byFile']));
+        if($result){
+            return $this->refresh();
+        }
+        echo $this->uniqueId . 'update done';
+        return $this->render('@app/modules/runinit/views/default/index');
+    }
+
+    public function actionGupiaoEverydayOpenClose()
+    {
+        echo $this->uniqueId . 'update';
+        $result=(new GupiaoOpenClosePriceSynchro())->actionRun();
+        if($result){
+            return $this->refresh();
+        }
         echo $this->uniqueId . 'update done';
         return $this->render('@app/modules/runinit/views/default/index');
     }

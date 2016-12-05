@@ -40,6 +40,7 @@ class GupiaoNameSynchro extends BaseServer
         $this->updateName();
     }
 
+    //得到所有股票号码与名称
     public function updateName()
     {
         die;
@@ -58,11 +59,12 @@ class GupiaoNameSynchro extends BaseServer
         //die;
     }
 
+    //
     public function getAllContent()
     {
         foreach ($this->Url as $key => $url) {
             $emptyTime = 0;
-            for ($page = 1; $page < 100; $page++) {
+            for ($page = 1; $page < 200; $page++) {
                 $content = $this->getOneContent($key, $page);
                 if (empty($content) || !is_array($content) || count($content) < 1) {
                     $emptyTime++;
@@ -82,7 +84,7 @@ class GupiaoNameSynchro extends BaseServer
                 }
                 LogText::log($content, 'content');
                 var_dump(end($content));
-                $sleep = rand(0, 4);
+                $sleep = rand(2, 5);
                 sleep($sleep);
             }
         }
