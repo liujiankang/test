@@ -39,7 +39,7 @@ return [
     ],
     'modules' => [
         'user' => [
-            'class' => 'frontend\modules\user\User',
+            'class' => 'frontend\modules\user\Module',
         ],
         'runconf' => [
             'class' => 'frontend\modules\runconf\Module',

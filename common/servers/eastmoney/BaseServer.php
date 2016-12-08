@@ -7,7 +7,6 @@
  */
 
 namespace common\servers\eastmoney;
-
 use common\servers\BaseService;
 
 class BaseServer extends BaseService

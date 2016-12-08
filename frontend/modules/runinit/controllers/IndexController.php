@@ -4,6 +4,8 @@ namespace frontend\modules\runinit\controllers;
 
 use common\servers\eastmoney\GupiaoNameSynchro;
 use common\servers\eastmoney\GupiaoOpenClosePriceSynchro;
+use common\servers\wangyi\GupiaoOpenClosePriceSynchro as GupiaoOpenClosePriceSynchroWangyi;
+use common\servers\tonghuashun\GupiaoOpenClosePriceSynchro as GupiaoOpenClosePriceSynchroThs;
 use common\servers\confinit\HolidayRawUpdate;
 use yii\web\Controller;
 use common\servers\confinit\HolidayRealInit;
@@ -48,9 +50,7 @@ class IndexController extends Controller
     {
         echo $this->uniqueId . 'update';
         $result=(new GpHistoryEveryday())->actionRun(isset($_GET['byFile']));
-        if($result){
-            return $this->refresh();
-        }
+        var_dump($result);
         echo $this->uniqueId . 'update done';
         return $this->render('@app/modules/runinit/views/default/index');
     }
@@ -59,9 +59,25 @@ class IndexController extends Controller
     {
         echo $this->uniqueId . 'update';
         $result=(new GupiaoOpenClosePriceSynchro())->actionRun();
-        if($result){
-            return $this->refresh();
-        }
+        var_dump($result);
+        echo $this->uniqueId . 'update done';
+        return $this->render('@app/modules/runinit/views/default/index');
+    }
+
+    public function actionGupiaoEverydayOpenCloseWangyi()
+    {
+        echo $this->uniqueId . 'update';
+        $result=(new GupiaoOpenClosePriceSynchroWangyi())->actionRun();
+         var_dump($result);
+        echo $this->uniqueId . 'update done';
+        return $this->render('@app/modules/runinit/views/default/index');
+    }
+
+    public function actionGupiaoEverydayOpenCloseThs()
+    {
+        echo $this->uniqueId . 'update';
+        $result=(new GupiaoOpenClosePriceSynchroThs())->actionRun();
+        var_dump($result);
         echo $this->uniqueId . 'update done';
         return $this->render('@app/modules/runinit/views/default/index');
     }

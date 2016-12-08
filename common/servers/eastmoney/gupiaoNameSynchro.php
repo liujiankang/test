@@ -1,5 +1,5 @@
 <?php
-namespace common\servers\eastmoney;
+namespace common\servers\tonghuashun;
 
 /**
  * Created by PhpStorm.
@@ -10,11 +10,8 @@ namespace common\servers\eastmoney;
 use common\lib\http\PhpTransfer;
 use common\lib\log\LogText;
 use common\models\gupiao\GupiaoCode;
-use common\servers\eastmoney\BaseServer;
-use yii\debug\models\search\Debug;
+use common\servers\tonghuashun\BaseServer;
 use yii\helpers\Json;
-use yii\log\Logger;
-use yii\web\JsonParser;
 
 class GupiaoNameSynchro extends BaseServer
 {
@@ -23,7 +20,7 @@ class GupiaoNameSynchro extends BaseServer
     public $requestUrl = '';
     public $shortNameMap = [1 => 'hu_a', 2 => 'hu_b', 3 => 'zh_a', 4 => 'zh_b'];
     public $Url = [
-        1 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/sha/quote',
+        1 => 'http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=CT&cmd=C._A&sty=FCOIATA&sortType=C&sortRule=-1&page={:page}&pageSize=20&js=var%20quote_123%3d{rank:[(x)],pages:(pc)}&token=7bc05d0d4c3c22ef9fca8c2a912d779c&jsName=quote_123&_g=0.5807471920270473',
         2 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/shb/quote',
         3 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/sza/quote',
         4 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/szb/quote'
@@ -37,7 +34,7 @@ class GupiaoNameSynchro extends BaseServer
 
     public function actionRun()
     {
-        $this->updateName();
+        $this->getAllContent();
     }
 
     //得到所有股票号码与名称
