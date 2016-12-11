@@ -34,7 +34,7 @@ class AccountLog extends \common\models\BaseModel
     const INCOME_TYPE_IN = 1;
     const INCOME_TYPE_OUT = -1;
 
-    public $actionTypeMap = [
+    public static $action_type_map = [
         self::ACTION_TYPE_CHARGE => '充值',
         self::ACTION_TYPE_WITHDRAW => '提现',
         self::ACTION_TYPE_INCOME_GUPIAO_LIXI => '股息分红',
@@ -47,7 +47,7 @@ class AccountLog extends \common\models\BaseModel
         self::ACTION_TYPE_FEE_GUOHU_SOLD => '过户（卖）',
         self::ACTION_TYPE_INCOME_JIANGLI => '其他奖励',
     ];
-    public $incomeTypeMap = [0 => '平衡', 1 => '收入', 2 => '支出'];
+    public static $income_type_map = [0 => '平衡', 1 => '收入', 2 => '支出'];
 
     /**
      * @inheritdoc
@@ -85,5 +85,9 @@ class AccountLog extends \common\models\BaseModel
             'date_str' => 'Date Str',
             'status' => 'Status',
         ];
+    }
+
+    public static function isEditable($id,$user_id){
+        return self::find()->where(['user_id'=>$user_id])->max('id')==$id;
     }
 }

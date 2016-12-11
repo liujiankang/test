@@ -29,6 +29,7 @@ $this->title = 'My Gupiao Application';
                 <?=Html::a('股票代码','/gupiao/gupiao-code',['class'=>'btn btn-success'])?>
                 <?=Html::a('股票每天交易简介','/gupiao/gp-everyday',['class'=>'btn btn-success'])?>
                 <?=Html::a('充值提现流水账','/user/account-log',['class'=>'btn btn-success'])?>
+                <?=Html::a('用户账户信息','/user/account-data',['class'=>'btn btn-success'])?>
             </div>
             <div class="col-lg-4">
                 <h2>Heading</h2>

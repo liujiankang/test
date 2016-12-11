@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use frontend\models\user\AccountLog;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\user\AccountLog */
@@ -16,9 +17,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'action_type')->textInput() ?>
+    <?= $form->field($model, 'action_type')->dropDownList(AccountLog::$action_type_map) ?>
 
-    <?= $form->field($model, 'income_type')->textInput() ?>
+    <?= $form->field($model, 'income_type')->dropDownList(AccountLog::$income_type_map) ?>
 
     <?= $form->field($model, 'action_time')->textInput() ?>
 
