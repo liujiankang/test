@@ -20,15 +20,17 @@ class AccountLog extends \common\models\BaseModel
 {
     const ACTION_TYPE_CHARGE = 1;
     const ACTION_TYPE_WITHDRAW = 2;
-    const ACTION_TYPE_INCOME_GUPIAO_LIXI = 3;
-    const ACTION_TYPE_INCOME_GUPIAO_DIFF_PRICE = 4;
-    const ACTION_TYPE_FEE_YINHUA_BUY = 5;
-    const ACTION_TYPE_FEE_YINHUA_SOLD = 6;
-    const ACTION_TYPE_FEE_YONGJIN_BUY = 7;
-    const ACTION_TYPE_FEE_YONGJIN_SOLD = 8;
-    const ACTION_TYPE_FEE_GUOHU_BUY = 9;
-    const ACTION_TYPE_FEE_GUOHU_SOLD = 10;
-    const ACTION_TYPE_INCOME_JIANGLI = 11;
+    const ACTION_TYPE_GUPIAO_BUY = 3;
+    const ACTION_TYPE_GUPIAO_SOLD = 4;
+    const ACTION_TYPE_INCOME_GUPIAO_LIXI = 5;
+    const ACTION_TYPE_INCOME_GUPIAO_DIFF_PRICE = 6;
+    const ACTION_TYPE_INCOME_JIANGLI = 7;
+    const ACTION_TYPE_FEE_YINHUA_BUY = 8;
+    const ACTION_TYPE_FEE_YINHUA_SOLD = 9;
+    const ACTION_TYPE_FEE_YONGJIN_BUY = 10;
+    const ACTION_TYPE_FEE_YONGJIN_SOLD = 11;
+    const ACTION_TYPE_FEE_GUOHU_BUY = 12;
+    const ACTION_TYPE_FEE_GUOHU_SOLD = 13;
 
     const INCOME_TYPE_DEFAULT = 0;
     const INCOME_TYPE_IN = 1;
@@ -37,6 +39,8 @@ class AccountLog extends \common\models\BaseModel
     public static $action_type_map = [
         self::ACTION_TYPE_CHARGE => '充值',
         self::ACTION_TYPE_WITHDRAW => '提现',
+        self::ACTION_TYPE_GUPIAO_BUY => '购买股票',
+        self::ACTION_TYPE_GUPIAO_SOLD => '卖出股票',
         self::ACTION_TYPE_INCOME_GUPIAO_LIXI => '股息分红',
         self::ACTION_TYPE_INCOME_GUPIAO_DIFF_PRICE => '股票卖出差价',
         self::ACTION_TYPE_FEE_YINHUA_BUY => '印花税（买）',

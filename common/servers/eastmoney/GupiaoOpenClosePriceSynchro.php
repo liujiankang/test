@@ -50,8 +50,11 @@ class GupiaoOpenClosePriceSynchro extends BaseServer
         $logHandle=fopen($this->errorFile,'a+');
         foreach ($this->Url as $key => $url) {
             $emptyTime = 0;
-            for ($page = 1; $page < 400; $page++) {
+            for ($page = 1; $page < 200; $page++) {
                 $content = $this->getOneContent($key, $page);
+                if($page==199){
+                    fwrite($logHandle,json_encode($content));
+                }
                 if (empty($content) || !is_array($content) || count($content) < 1) {
                     $emptyTime++;
                     fwrite($logHandle,"page $page empty $emptyTime times ");
