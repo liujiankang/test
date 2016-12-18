@@ -6,6 +6,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\servers\user\UserAccount;
+use common\servers\sina\GpEverydayDealDetails;
 
 /**
  * Site controller
@@ -53,13 +54,8 @@ class TestController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return mixed
-     */
     public function actionIndex()
     {
-        (new UserAccount())->ChargeSyn();
+        (new GpEverydayDealDetails())->actionRun();
     }
 }

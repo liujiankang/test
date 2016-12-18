@@ -28,6 +28,16 @@ use Yii;
  */
 class GupiaoEveryday extends \common\models\BaseModel
 {
+    const STATUS_UNDOWN=0;
+    const STATUS_DOWNING=1;//开始下载
+    const STATUS_DOWNED=2;//下载完成
+    const STATUS_DECODEING=3;//开始解码
+    const STATUS_DECODED=4;//解码完成
+    const STATUS_INSERTING=5;//开始插入
+    const STATUS_INSERTED=6;//插入完成
+    const STATUS_CHECKING=7;//开始检查
+    const STATUS_DONE=8;//检查完成
+
     /**
      * @inheritdoc
      */

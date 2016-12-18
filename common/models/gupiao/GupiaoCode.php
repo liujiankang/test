@@ -23,6 +23,14 @@ class GupiaoCode extends \common\models\BaseModel
     const STATUS_CLOSE = 2;//停牌
     const STATUS_DIE = 3;//退市
     const STATUS_CONVERT = 4;//转变为其他股票
+    
+    const TYPE_HUA=1;
+    const TYPE_HUB=2;
+    const TYPE_ZHA=3;
+    const TYPE_ZHB=4;
+    //[1 => 'hu_a', 2 => 'hu_b', 3 => 'zh_a', 4 => 'zh_b'];
+
+
 
     /**
      * @inheritdoc
