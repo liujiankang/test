@@ -8677,7 +8677,7 @@ Click on any string to get more details
 Pogo 2.0.0.13.6866 
 Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080414 Firefox/2.0.0.13 Pogo/2.0.0.13.6866 
 Prism 
-XULRunner based browser that hosts web applications without the normal web browser user interface. Prism is based on a concept called Site Specific Browsers (SSB). An SSB is an application with an embedded browser designed to work exclusively with a single web application. It doesn抰 have the menus, toolbars and accoutrements of a normal web browser.
+XULRunner based browser that hosts web applications without the normal web browser user interfer. Prism is based on a concept called Site Specific Browsers (SSB). An SSB is an application with an embedded browser designed to work exclusively with a single web application. It doesn抰 have the menus, toolbars and accoutrements of a normal web browser.
 
 Click on any string to get more details
 
@@ -10709,7 +10709,7 @@ Click on any string to get more details
 Psbot 0.1 
 psbot/0.1 (+http://www.picsearch.com/bot.html) 
 PycURL 
-PycURL is a Python interface to libcurl. PycURL can be used to fetch objects identified by a URL from a Python program, similar to the urllib Python module
+PycURL is a Python interfer to libcurl. PycURL can be used to fetch objects identified by a URL from a Python program, similar to the urllib Python module
 
 Click on any string to get more details
 
@@ -11711,7 +11711,7 @@ Click on any string to get more details
 Snoopy v1.2 
 Snoopy v1.2 
 URD-MAGPIE 
-URD (Usenet Resource Downloader) is a program to download binaries from usenet (newsgroups) through a web interface
+URD (Usenet Resource Downloader) is a program to download binaries from usenet (newsgroups) through a web interfer
 
 Click on any string to get more details
 

@@ -21,9 +21,9 @@ class GupiaoNameSynchro extends BaseServer
     public $shortNameMap = [1 => 'hu_a', 2 => 'hu_b', 3 => 'zh_a', 4 => 'zh_b'];
     public $Url = [
         1 => 'http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=CT&cmd=C._A&sty=FCOIATA&sortType=C&sortRule=-1&page={:page}&pageSize=20&js=var%20quote_123%3d{rank:[(x)],pages:(pc)}&token=7bc05d0d4c3c22ef9fca8c2a912d779c&jsName=quote_123&_g=0.5807471920270473',
-        2 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/shb/quote',
-        3 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/sza/quote',
-        4 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/szb/quote'
+        2 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/shb/quote',
+        3 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/sza/quote',
+        4 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/szb/quote'
     ];
 
     public function init()

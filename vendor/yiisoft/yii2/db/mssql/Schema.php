@@ -117,7 +117,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Creates a query builder for the MSSQL database.
-     * @return QueryBuilder query builder interface.
+     * @return QueryBuilder query builder interfer.
      */
     public function createQueryBuilder()
     {

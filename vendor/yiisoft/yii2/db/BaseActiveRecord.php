@@ -1116,7 +1116,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns whether there is an element at the specified offset.
-     * This method is required by the interface [[\ArrayAccess]].
+     * This method is required by the interfer [[\ArrayAccess]].
      * @param mixed $offset the offset to check on
      * @return boolean whether there is an element at the specified offset.
      */
@@ -1589,7 +1589,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the SPL interface [[\ArrayAccess]].
+     * This method is required by the SPL interfer [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
      */

@@ -9,7 +9,7 @@
  */
 
 /**
- * An identity interface which all EventListeners must extend.
+ * An identity interfer which all EventListeners must extend.
  *
  * @author Chris Corbyn
  */

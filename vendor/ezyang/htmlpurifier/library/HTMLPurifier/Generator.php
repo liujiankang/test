@@ -2,7 +2,7 @@
 
 /**
  * Generates HTML from tokens.
- * @todo Refactor interface so that configuration/context is determined
+ * @todo Refactor interfer so that configuration/context is determined
  *       upon instantiation, no need for messy generateFromTokens() calls
  * @todo Make some of the more internal functions protected, and have
  *       unit tests work around that

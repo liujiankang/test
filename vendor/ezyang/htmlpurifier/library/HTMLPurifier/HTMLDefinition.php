@@ -453,7 +453,7 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
      *      it is different, and you'll probably have to modify your lists
      * @param array $list String list to parse
      * @return array
-     * @todo Give this its own class, probably static interface
+     * @todo Give this its own class, probably static interfer
      */
     public function parseTinyMCEAllowedList($list)
     {

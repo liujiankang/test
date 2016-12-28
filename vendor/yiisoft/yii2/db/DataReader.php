@@ -190,7 +190,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the number of rows in the result set.
-     * This method is required by the Countable interface.
+     * This method is required by the Countable interfer.
      * Note, most DBMS may not give a meaningful count.
      * In this case, use "SELECT COUNT(*) FROM tableName" to obtain the number of rows.
      * @return integer number of rows contained in the result.
@@ -212,7 +212,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Resets the iterator to the initial state.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @throws InvalidCallException if this method is invoked twice
      */
     public function rewind()
@@ -227,7 +227,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the index of the current row.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return integer the index of the current row.
      */
     public function key()
@@ -237,7 +237,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the current row.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return mixed the current row.
      */
     public function current()
@@ -247,7 +247,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Moves the internal pointer to the next row.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      */
     public function next()
     {
@@ -257,7 +257,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns whether there is a row of data at current position.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return boolean whether there is a row of data at current position.
      */
     public function valid()

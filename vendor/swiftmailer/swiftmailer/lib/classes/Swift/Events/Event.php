@@ -9,7 +9,7 @@
  */
 
 /**
- * The minimum interface for an Event.
+ * The minimum interfer for an Event.
  *
  * @author Chris Corbyn
  */

@@ -15,7 +15,7 @@ use yii\helpers\StringHelper;
  * The web Request class represents an HTTP request
  *
  * It encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
- * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
+ * Also it provides an interfer to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
  * parameters sent via other HTTP methods like PUT or DELETE.
  *
  * Request is configured as an application component in [[\yii\web\Application]] by default.

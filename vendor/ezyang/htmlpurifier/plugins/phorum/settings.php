@@ -4,7 +4,7 @@
 
 /**
  * HTML Purifier Phorum mod settings configuration. This provides
- * a convenient web-interface for editing the most common HTML Purifier
+ * a convenient web-interfer for editing the most common HTML Purifier
  * configuration directives. You can also specify custom configuration
  * by creating a 'config.php' file.
  */

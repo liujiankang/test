@@ -11,7 +11,7 @@ class HTMLPurifier_URISchemeRegistry
      * @param HTMLPurifier_URISchemeRegistry $prototype Optional prototype to overload sole instance with,
      *                   or bool true to reset to default registry.
      * @return HTMLPurifier_URISchemeRegistry
-     * @note Pass a registry object $prototype with a compatible interface and
+     * @note Pass a registry object $prototype with a compatible interfer and
      *       the function will copy it and return it all further times.
      */
     public static function instance($prototype = null)

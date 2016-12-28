@@ -40,7 +40,7 @@ use yii\helpers\ArrayHelper;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
- * interface UserFinderInterface
+ * interfer UserFinderInterface
  * {
  *     function findUser();
  * }
@@ -110,11 +110,11 @@ class Container extends Component
      */
     private $_params = [];
     /**
-     * @var array cached ReflectionClass objects indexed by class/interface names
+     * @var array cached ReflectionClass objects indexed by class/interfer names
      */
     private $_reflections = [];
     /**
-     * @var array cached dependencies indexed by class/interface names. Each class name
+     * @var array cached dependencies indexed by class/interfer names. Each class name
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
@@ -143,7 +143,7 @@ class Container extends Component
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
-     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @throws NotInstantiableException If resolved to an abstract class or an interfer (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -194,8 +194,8 @@ class Container extends Component
      * // register a class name as is. This can be skipped.
      * $container->set('yii\db\Connection');
      *
-     * // register an interface
-     * // When a class depends on the interface, the corresponding class
+     * // register an interfer
+     * // When a class depends on the interfer, the corresponding class
      * // will be instantiated as the dependent object
      * $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
      *
@@ -232,7 +232,7 @@ class Container extends Component
      * If a class definition with the same name already exists, it will be overwritten with the new one.
      * You may use [[has()]] to check if a class definition already exists.
      *
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @param mixed $definition the definition associated with `$class`. It can be one of the following:
      *
      * - a PHP callable: The callable will be executed when [[get()]] is invoked. The signature of the callable
@@ -242,7 +242,7 @@ class Container extends Component
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
      *   values of the newly created object when [[get()]] is called. The `class` element stands for the
      *   the class of the object to be created. If `class` is not specified, `$class` will be used as the class name.
-     * - a string: a class name, an interface name or an alias name.
+     * - a string: a class name, an interfer name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
      * @return $this the container itself
@@ -261,7 +261,7 @@ class Container extends Component
      * This method is similar to [[set()]] except that classes registered via this method will only have one
      * instance. Each time [[get()]] is called, the same instance of the specified class will be returned.
      *
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @param mixed $definition the definition associated with `$class`. See [[set()]] for more details.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
@@ -278,7 +278,7 @@ class Container extends Component
 
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @return boolean whether the container has the definition of the specified name..
      * @see set()
      */
@@ -289,7 +289,7 @@ class Container extends Component
 
     /**
      * Returns a value indicating whether the given name corresponds to a registered singleton.
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @param boolean $checkInstance whether to check if the singleton has been instantiated.
      * @return boolean whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
      * the method should return a value indicating whether the singleton has been instantiated.
@@ -301,7 +301,7 @@ class Container extends Component
 
     /**
      * Removes the definition for the specified name.
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      */
     public function clear($class)
     {
@@ -354,7 +354,7 @@ class Container extends Component
      * @param array $params constructor parameters
      * @param array $config configurations to be applied to the new instance
      * @return object the newly created instance of the specified class
-     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @throws NotInstantiableException If resolved to an abstract class or an interfer (since 2.0.9)
      */
     protected function build($class, $params, $config)
     {
@@ -388,7 +388,7 @@ class Container extends Component
 
     /**
      * Merges the user-specified constructor parameters with the ones registered via [[set()]].
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @param array $params the constructor parameters
      * @return array the merged parameters
      */
@@ -409,7 +409,7 @@ class Container extends Component
 
     /**
      * Returns the dependencies of the specified class.
-     * @param string $class class name, interface name or alias name
+     * @param string $class class name, interfer name or alias name
      * @return array the dependencies of the specified class.
      */
     protected function getDependencies($class)
@@ -485,7 +485,7 @@ class Container extends Component
      * This can be either a list of parameters, or an associative array representing named function parameters.
      * @return mixed the callback return value.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
-     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @throws NotInstantiableException If resolved to an abstract class or an interfer (since 2.0.9)
      * @since 2.0.7
      */
     public function invoke(callable $callback, $params = [])
@@ -507,7 +507,7 @@ class Container extends Component
      * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return array The resolved dependencies.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
-     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @throws NotInstantiableException If resolved to an abstract class or an interfer (since 2.0.9)
      * @since 2.0.7
      */
     public function resolveCallableDependencies(callable $callback, $params = [])

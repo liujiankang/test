@@ -6,7 +6,6 @@
 
 假期日子变更：http://www.gupiao.cn/runconf/holiday-raw/
 
-http://market.finance.sina.com.cn/downxls.php?date=2016-12-16&symbol=sh601988
 driver = webdriver.Firefox()
 driver.implicitly_wait(30) # 隐性等待，最长等30秒
 driver.get('http://quotes.money.163.com/trade/lsjysj_000517.html#06f01')

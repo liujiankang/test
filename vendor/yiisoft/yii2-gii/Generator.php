@@ -453,7 +453,7 @@ abstract class Generator extends Model
             'include_once',
             'instanceof',
             'insteadof',
-            'interface',
+            'interfer',
             'isset',
             'list',
             'namespace',

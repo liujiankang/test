@@ -8,13 +8,13 @@
 namespace yii\db;
 
 /**
- * ActiveQueryInterface defines the common interface to be implemented by active record query classes.
+ * ActiveQueryInterface defines the common interfer to be implemented by active record query classes.
  *
  * That are methods for either normal queries that return active records but also relational queries
  * in which the query represents a relation between two active record classes and will return related
  * records only.
  *
- * A class implementing this interface should also use [[ActiveQueryTrait]] and [[ActiveRelationTrait]].
+ * A class implementing this interfer should also use [[ActiveQueryTrait]] and [[ActiveRelationTrait]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

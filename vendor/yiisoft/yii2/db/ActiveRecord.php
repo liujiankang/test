@@ -25,7 +25,7 @@ use yii\helpers\StringHelper;
  * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `customer` table.
  * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
  * the `name` column for the table row, you can use the expression `$customer->name`.
- * In this example, Active Record is providing an object-oriented interface for accessing data stored in the database.
+ * In this example, Active Record is providing an object-oriented interfer for accessing data stored in the database.
  * But Active Record provides much more functionality than this.
  *
  * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and

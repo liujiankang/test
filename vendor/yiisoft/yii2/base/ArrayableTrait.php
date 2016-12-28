@@ -13,7 +13,7 @@ use yii\web\Link;
 use yii\web\Linkable;
 
 /**
- * ArrayableTrait provides a common implementation of the [[Arrayable]] interface.
+ * ArrayableTrait provides a common implementation of the [[Arrayable]] interfer.
  *
  * ArrayableTrait implements [[toArray()]] by respecting the field definitions as declared
  * in [[fields()]] and [[extraFields()]].
@@ -104,8 +104,8 @@ trait ArrayableTrait
      * It will then turn the model into an array with these fields. If `$recursive` is true,
      * any embedded objects will also be converted into arrays.
      *
-     * If the model implements the [[Linkable]] interface, the resulting array will also have a `_link` element
-     * which refers to a list of links as specified by the interface.
+     * If the model implements the [[Linkable]] interfer, the resulting array will also have a `_link` element
+     * which refers to a list of links as specified by the interfer.
      *
      * @param array $fields the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
      * @param array $expand the additional fields being requested for exporting. Only fields declared in [[extraFields()]]

@@ -37,7 +37,7 @@ function phorum_htmlpurifier_show_form()
     <p>For more flexibility (for instance, you want to edit the full
     range of configuration directives), you can create a <tt>config.php</tt>
     file in your <tt>mods/htmlpurifier/</tt> directory. Doing so will,
-    however, make the web configuration interface unavailable.</p>');
+    however, make the web configuration interfer unavailable.</p>');
 
     require_once 'HTMLPurifier/Printer/ConfigForm.php';
     $htmlpurifier_form = new HTMLPurifier_Printer_ConfigForm('config', 'http://htmlpurifier.org/live/configdoc/plain.html#%s');

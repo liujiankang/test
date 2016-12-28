@@ -8,10 +8,10 @@
 namespace yii\web;
 
 /**
- * IdentityInterface is the interface that should be implemented by a class providing identity information.
+ * IdentityInterface is the interfer that should be implemented by a class providing identity information.
  *
- * This interface can typically be implemented by a user model class. For example, the following
- * code shows how to implement this interface by a User ActiveRecord class:
+ * This interfer can typically be implemented by a user model class. For example, the following
+ * code shows how to implement this interfer by a User ActiveRecord class:
  *
  * ```php
  * class User extends ActiveRecord implements IdentityInterface

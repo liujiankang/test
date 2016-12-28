@@ -19,10 +19,10 @@ class GupiaoOpenClosePriceSynchro extends BaseServer
     public $requestUrl = '';
     public $shortNameMap = [1 => 'hu_a', 2 => 'hu_b', 3 => 'zh_a', 4 => 'zh_b'];
     public $Url = [
-        1 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/sha/quote',
-        2 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/shb/quote',
-        3 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/sza/quote',
-        4 => 'http://q.10jqka.com.cn/interface/stock/fl/zdf/desc/{:page}/szb/quote'
+        1 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/sha/quote',
+        2 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/shb/quote',
+        3 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/sza/quote',
+        4 => 'http://q.10jqka.com.cn/interfer/stock/fl/zdf/desc/{:page}/szb/quote'
     ];
     //http://q.10jqka.com.cn/stock/fl/#refCountId=qs_fl
     public $fileName='gupiaoOpenClose/';

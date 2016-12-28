@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fluent interface for validating the contents of member variables.
+ * Fluent interfer for validating the contents of member variables.
  * This should be immutable. See HTMLPurifier_ConfigSchema_Validator for
  * use-cases. We name this an 'atom' because it's ONLY for validations that
  * are independent and usually scalar.

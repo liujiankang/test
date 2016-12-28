@@ -10,7 +10,7 @@ namespace yii\db;
 /**
  * The QueryInterface defines the minimum set of methods to be implemented by a database query.
  *
- * The default implementation of this interface is provided by [[QueryTrait]].
+ * The default implementation of this interfer is provided by [[QueryTrait]].
  *
  * It has support for getting [[one]] instance or [[all]].
  * Allows pagination via [[limit]] and [[offset]].

@@ -47,7 +47,7 @@ class GpEverydayDealDetails extends BaseService
 
     public function actionRun()
     {
-        $this->disPatch();
+        return $this->disPatch();
     }
 
     public function disPatch()
@@ -55,13 +55,14 @@ class GpEverydayDealDetails extends BaseService
         $this->maxId = 200000;
         $this->minId = 0;
         $status = GupiaoEveryModel::STATUS_UNDOWN;
-        $codes = $this->getCodes('2016-12-02', $status);
-        var_dump($codes);
+        $codes = $this->getCodes('2016-12-12', $status);
         if (empty($codes)) {
             //do something
+            return true;
         } else {
             $urls = $this->getDownUrl($codes);
-            $this->httpOperator->getMultiContent($urls,true);
+            var_dump($urls);die;
+            return $this->httpOperator->getMultiContent($urls,true);
         }
     }
 

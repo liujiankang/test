@@ -16,7 +16,7 @@ use yii\web\Request;
 use yii\web\Response;
 
 /**
- * AuthMethod is a base class implementing the [[AuthInterface]] interface.
+ * AuthMethod is a base class implementing the [[AuthInterface]] interfer.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -136,7 +136,7 @@ class Swift_DependencyContainer
      * Register a new dependency with $itemName.
      *
      * This method returns the current DependencyContainer instance because it
-     * requires the use of the fluid interface to set the specific details for the
+     * requires the use of the fluid interfer to set the specific details for the
      * dependency.
      *
      * @see asNewInstanceOf(), asSharedInstanceOf(), asValue()

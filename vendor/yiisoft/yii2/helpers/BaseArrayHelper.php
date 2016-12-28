@@ -689,7 +689,7 @@ class BaseArrayHelper
      * Check whether an array or [[\Traversable]] contains an element.
      *
      * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
-     * but additionally works for objects that implement the [[\Traversable]] interface.
+     * but additionally works for objects that implement the [[\Traversable]] interfer.
      * @param mixed $needle The value to look for.
      * @param array|\Traversable $haystack The set of values to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
@@ -719,7 +719,7 @@ class BaseArrayHelper
      * Checks whether a variable is an array or [[\Traversable]].
      *
      * This method does the same as the PHP function [is_array()](http://php.net/manual/en/function.is-array.php)
-     * but additionally works on objects that implement the [[\Traversable]] interface.
+     * but additionally works on objects that implement the [[\Traversable]] interfer.
      * @param mixed $var The variable being evaluated.
      * @return boolean whether $var is array-like
      * @see http://php.net/manual/en/function.is_array.php

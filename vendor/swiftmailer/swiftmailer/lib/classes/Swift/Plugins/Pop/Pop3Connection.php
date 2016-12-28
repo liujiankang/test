@@ -9,7 +9,7 @@
  */
 
 /**
- * Pop3Connection interface for connecting and disconnecting to a POP3 host.
+ * Pop3Connection interfer for connecting and disconnecting to a POP3 host.
  *
  * @author Chris Corbyn
  */

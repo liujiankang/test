@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * BootstrapInterface is the interface that should be implemented by classes who want to participate in the application bootstrap process.
+ * BootstrapInterface is the interfer that should be implemented by classes who want to participate in the application bootstrap process.
  *
  * The main method [[bootstrap()]] will be invoked by an application at the beginning of its `init()` method.
  *

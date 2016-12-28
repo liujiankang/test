@@ -8,7 +8,7 @@
 namespace yii\filters;
 
 /**
- * RateLimitInterface is the interface that may be implemented by an identity object to enforce rate limiting.
+ * RateLimitInterface is the interfer that may be implemented by an identity object to enforce rate limiting.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

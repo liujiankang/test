@@ -13,14 +13,14 @@ class WgetTransfer
     public $params = [];
     public $heads = [];
     public $cookies = [];
-    public $timeOut = 600;//second
-    public $testInterval = 1;//second
-    public $testTimes = 600;//second
+    public $timeOut = 200;//second
+    public $testInterval = 5;//second
+    public $testTimes = 6000;//second
     public $userAgent = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16";
 
     public function init($saveDir = '/data/gupiao/', $timeOut = '')
     {
-        empty($saveDir) ? '' : $this->saved = $saveDir;
+        empty($saveDir) ? '' : $this->saveDir = $saveDir;
         empty($timeOut) ? '' : $this->timeOut = $timeOut;
     }
 
@@ -45,29 +45,47 @@ class WgetTransfer
             $urls[$key]['result'] = $this->getContent($downUrl, $name);
         }
         if ($isWait) {
-            return $this->testDownloadIsDone(self::TEST_DOWN_BY_NUM,2);
+            //(array_column($urls, 'result'));
+            return $this->testDownloadIsDone(self::TEST_DOWN_BY_PID, array_column($urls, 'result'));
         } else {
             return $urls;
         }
     }
 
-    public function getContent($downUrl, $name)
+    public function getContent($downUrl, $name, $logFile = null)
     {
         if (empty($downUrl)) {
             return false;
         }
-        $command = 'wget -nv -bO {:name} -a data/gupiao.log -A txt --user-agent="{:userAgent}" {:url} |grep pid';
-        $command = str_replace('{:name}', $name, $command);
-        $command = str_replace('{:url}', $downUrl, $command);
+        if (file_exists("'$name'")==1 || is_file($name)) {
+            print ($name . ' already exist' . PHP_EOL);
+            return true;
+        }
+        $dir = dirname($name);
+        if (!is_dir($dir)) {
+            try{
+                mkdir($dir, 777, true);
+            }catch (\Exception $e){
+                var_dump($dir);
+                throw $e;
+            }
+        }
+        if (empty($logFile)) {
+            $logfile = $dir . "/gupiao.log";
+        }
+
+        $command = "wget -nv -bO '$name' -a '$logfile' -A txt --user-agent=\"{:userAgent}\" '$downUrl' |grep pid";
         $command = str_replace('{:userAgent}', $this->userAgent, $command);
-        //继续在后台运行,pid
+        //print $command;
         $result = exec($command);
-        if(empty($result)||strpos($result,'pid')===false||!preg_match_all('/\d{4,10}/',$result,$arr)){
+        if (empty($result) || strpos($result, 'pid') === false || !preg_match('/\d{4,10}/', $result, $arr)) {
+            //die(1);
             return false;
-        }else{
-            if(isset($arr[0])&&is_numeric($arr[0])){
+        } else {
+            if (isset($arr[0]) && is_numeric($arr[0])) {
                 return $arr[0];
-            }else{
+            } else {
+                //die(2);
                 return false;
             }
         }
@@ -79,12 +97,12 @@ class WgetTransfer
             'save1' => ['name' => 'data/test1', 'url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
             'save2' => ['name' => 'data/test2', 'url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
             'save3' => ['name' => 'data/test3', 'url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
-            'save4' => ['url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
-            'save5' => ['url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
+            //'save4' => ['url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
+            //'save5' => ['url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
             'save6' => ['name' => 'data/test6', 'url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
             'save7' => ['name' => 'data/test7', 'url' => 'http://59.109.99.45/IXC9ceef41bc18e8a0282686ca1067a8ff4/1373531451/down/Thunder5.9.28.1564.zip'],
         ];
-        return $this->getMultiContent($urls,true);
+        return $this->getMultiContent($urls, true);
     }
 
     public function postContent($params = null, $url = null, $isHeard = false)
@@ -92,7 +110,7 @@ class WgetTransfer
 
     }
 
-    public function testDownloadIsDone($by = 1, $data = null)
+    public function testDownloadIsDone($by = 2, $data = null)
     {
         if ($by == self::TEST_DOWN_BY_NUM) {
             return $this->testDoneByNum($data);
@@ -123,8 +141,17 @@ class WgetTransfer
     private function testDoneByPid($pids)
     {
         $time = time();
-        $testCommand = "ps aux | awk '{print $2}' |grep {:pid}";
+        $Command = "ps aux | awk '{print $2}' |grep {:pid}";
         $done = [];
+        $tempid = [];
+        foreach ($pids as $pid) {
+            if ($pid > 1) {
+                array_push($tempid, $pid);
+            }
+        }
+        if (count($tempid) < 1) {
+            return true;
+        }
         for ($i = 0; $i < $this->testTimes; $i++) {
             sleep($this->testInterval);
             if (time() - $time > $this->timeOut) {
@@ -132,14 +159,17 @@ class WgetTransfer
             }
 
             if (count($pids) <= 0) {
-                return self::STATUS_SUCCESS;
+                return $done;
             }
 
             foreach ($pids as $key => $pid) {
+                $testCommand = str_replace('{:pid}', $pid, $Command);
                 $result = exec($testCommand);
                 if ($result == '') {
                     $done[$pid] = true;
                     unset($pids[$key]);
+                } else {
+                    print($result . "|");
                 }
             }
         }

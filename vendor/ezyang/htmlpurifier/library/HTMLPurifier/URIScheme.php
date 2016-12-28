@@ -53,7 +53,7 @@ abstract class HTMLPurifier_URIScheme
     abstract public function doValidate(&$uri, $config, $context);
 
     /**
-     * Public interface for validating components of a URI.  Performs a
+     * Public interfer for validating components of a URI.  Performs a
      * bunch of default actions. Don't overload this method.
      * @param HTMLPurifier_URI $uri Reference to a HTMLPurifier_URI object
      * @param HTMLPurifier_Config $config

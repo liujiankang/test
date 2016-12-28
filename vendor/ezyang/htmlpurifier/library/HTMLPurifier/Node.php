@@ -6,7 +6,7 @@
  * Why do we not use the DOM extension?  (1) It is not always available,
  * (2) it has funny constraints on the data it can represent,
  * whereas we want a maximally flexible representation, and (3) its
- * interface is a bit cumbersome.
+ * interfer is a bit cumbersome.
  */
 abstract class HTMLPurifier_Node
 {

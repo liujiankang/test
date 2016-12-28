@@ -6,14 +6,14 @@ namespace console\controllers;
  * Date: 2016/11/12
  * Time: 21:00
  */
-use \yii\console\Controller;
-class StoreDataController extends Controller{
+use yii\console\Controller;
+use Yii;
+class StoreDataController extends \yii\console\Controller{
      public $storeDb;
 
     public function init()
     {
         parent::init();
-        $this->storeDb=Yii::$app->StoreDb;
     }
 
     public function actionRun(){

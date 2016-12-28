@@ -11,7 +11,7 @@ use Yii;
 use yii\base\Object;
 
 /**
- * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
+ * ColumnSchemaBuilder helps to define database schema types using a PHP interfer.
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *

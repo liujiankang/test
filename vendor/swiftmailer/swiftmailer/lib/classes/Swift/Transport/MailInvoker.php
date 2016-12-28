@@ -9,7 +9,7 @@
  */
 
 /**
- * This interface intercepts calls to the mail() function.
+ * This interfer intercepts calls to the mail() function.
  *
  * @author     Chris Corbyn
  */

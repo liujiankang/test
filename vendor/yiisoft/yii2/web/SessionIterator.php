@@ -35,7 +35,7 @@ class SessionIterator implements \Iterator
 
     /**
      * Rewinds internal array pointer.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      */
     public function rewind()
     {
@@ -44,7 +44,7 @@ class SessionIterator implements \Iterator
 
     /**
      * Returns the key of the current array element.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return mixed the key of the current array element
      */
     public function key()
@@ -54,7 +54,7 @@ class SessionIterator implements \Iterator
 
     /**
      * Returns the current array element.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return mixed the current array element
      */
     public function current()
@@ -64,7 +64,7 @@ class SessionIterator implements \Iterator
 
     /**
      * Moves the internal pointer to the next array element.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      */
     public function next()
     {
@@ -75,7 +75,7 @@ class SessionIterator implements \Iterator
 
     /**
      * Returns whether there is an element at current position.
-     * This method is required by the interface [[\Iterator]].
+     * This method is required by the interfer [[\Iterator]].
      * @return boolean
      */
     public function valid()

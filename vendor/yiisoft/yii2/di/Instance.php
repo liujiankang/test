@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  *
  * Instance is mainly used in two places:
  *
- * - When configuring a dependency injection container, you use Instance to reference a class name, interface name
+ * - When configuring a dependency injection container, you use Instance to reference a class name, interfer name
  *   or alias name. The reference can later be resolved into the actual object by the container.
  * - In classes which use service locator to obtain dependent objects.
  *
@@ -56,7 +56,7 @@ use yii\base\InvalidConfigException;
 class Instance
 {
     /**
-     * @var string the component ID, class name, interface name or alias name
+     * @var string the component ID, class name, interfer name or alias name
      */
     public $id;
 
@@ -84,7 +84,7 @@ class Instance
      * Resolves the specified reference into the actual object and makes sure it is of the specified type.
      *
      * The reference may be specified as a string or an Instance object. If the former,
-     * it will be treated as a component ID, a class/interface name or an alias, depending on the container type.
+     * it will be treated as a component ID, a class/interfer name or an alias, depending on the container type.
      *
      * If you do not specify a container, the method will first try `Yii::$app` followed by `Yii::$container`.
      *
@@ -103,7 +103,7 @@ class Instance
      * You may specify a reference in terms of a component ID or an Instance object.
      * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
      * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
-     * @param string $type the class/interface name to be checked. If null, type check will not be performed.
+     * @param string $type the class/interfer name to be checked. If null, type check will not be performed.
      * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid

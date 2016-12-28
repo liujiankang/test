@@ -13,7 +13,7 @@
  *
  * It is advised that users do not use this transport if at all possible
  * since a number of plugin features cannot be used in conjunction with this
- * transport due to the internal interface in PHP itself.
+ * transport due to the internal interfer in PHP itself.
  *
  * The level of error reporting with this transport is incredibly weak, again
  * due to limitations of PHP's internal mail() function.  You'll get an

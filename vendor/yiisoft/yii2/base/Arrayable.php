@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * Arrayable is the interface that should be implemented by classes who want to support customizable representation of their instances.
+ * Arrayable is the interfer that should be implemented by classes who want to support customizable representation of their instances.
  *
  * For example, if a class implements Arrayable, by calling [[toArray()]], an instance of this class
  * can be turned into an array (including all its embedded objects) which can then be further transformed easily

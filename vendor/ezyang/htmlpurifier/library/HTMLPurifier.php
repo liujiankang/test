@@ -14,7 +14,7 @@
  *      -# Validating attributes of the nodes; and
  *  -# Generating HTML from the purified tokens.
  *
- * However, most users will only need to interface with the HTMLPurifier
+ * However, most users will only need to interfer with the HTMLPurifier
  * and HTMLPurifier_Config.
  */
 

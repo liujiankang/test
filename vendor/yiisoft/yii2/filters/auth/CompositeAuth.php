@@ -44,7 +44,7 @@ class CompositeAuth extends AuthMethod
      *
      * If this property is empty, no authentication will be performed.
      *
-     * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
+     * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interfer.
      */
     public $authMethods = [];
 
