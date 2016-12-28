@@ -311,4 +311,17 @@ class Logger extends Component
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';
     }
+    
+    public function logError($message, $category = 'application'){
+        $this->log($message,self::LEVEL_ERROR,$category);
+    }
+    public function logWarning($message, $category = 'application'){
+        $this->log($message,self::LEVEL_WARNING,$category);
+    }
+    public function logInfo($message, $category = 'application'){
+        $this->log($message,self::LEVEL_INFO,$category);
+    }
+    public function logTrace($message, $category = 'application'){
+        $this->log($message,self::LEVEL_TRACE,$category);
+    }
 }

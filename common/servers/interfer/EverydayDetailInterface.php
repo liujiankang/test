@@ -6,13 +6,23 @@ namespace common\servers\interfer;
  * Date: 2016/11/27
  * Time: 18:37
  */
+use yii\base\Component;
 
-interface EverydayDetail{
+abstract class EverydayDetailInterface extends Component{
 
-    //得到需要更新的code
-    public function getCodes();
-    public function getContent();
-    public function getMultContent();
+    protected $httpOperator;
+    public function init()
+    {
+        parent::init();
+    }
+
+    abstract function getUrl($data);
+    abstract function getUrls($data);
+    abstract function getCodes($data);
+    abstract function isNeedDownload($data);
+    abstract function isNeedUpdate($data);
+    abstract function decode($data);
+    abstract function update($data);
 }
 
 
