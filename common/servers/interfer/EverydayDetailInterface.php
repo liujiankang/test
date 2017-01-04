@@ -23,6 +23,7 @@ abstract class EverydayDetailInterface extends Component{
     abstract function isNeedUpdate($data);
     abstract function decode($data);
     abstract function update($data);
+    
 }
 
 

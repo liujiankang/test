@@ -72,6 +72,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::trace('here','title');
+        Yii::info($this->actions(),'title');
         return $this->render('link');
     }
 
