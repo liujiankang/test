@@ -56,6 +56,19 @@ class TestController extends Controller
 
     public function actionIndex()
     {
-        (new GpEverydayDealDetails())->actionRun();
+        $arr = [1, 2, 3, 4, 6, 7];
+        echo __CLASS__;
+        echo __METHOD__;
+        echo __NAMESPACE__;
+        do {
+
+
+            foreach ($arr as $key => $value) {
+                if (rand(1, 3) > 1) {
+                    unset($arr[$key]);
+                }
+                var_dump($arr);
+            }
+        } while (count($arr) > 1);
     }
 }

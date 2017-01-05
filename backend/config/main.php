@@ -15,6 +15,9 @@ return [
         'config' => [
             'class' => 'backend\modules\config\Module',
         ],
+        'system' => [
+            'class' => 'backend\modules\system\Module',
+        ],
     ],
     'components' => [
         'request' => [

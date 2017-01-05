@@ -1,5 +1,9 @@
 <?php
 namespace common\lib\http;
+
+use yii\helpers\FileHelper;
+use Yii;
+
 class WgetTransfer
 {
     const STATUS_FAIL = false;
@@ -8,7 +12,10 @@ class WgetTransfer
 
     const TEST_DOWN_BY_NUM = 1;
     const TEST_DOWN_BY_PID = 2;
+
+    static $pids = [];
     public $url;
+    public $ignoreNumber = 2;
     public $saveDir;
     public $params = [];
     public $heads = [];
@@ -57,16 +64,17 @@ class WgetTransfer
         if (empty($downUrl)) {
             return false;
         }
-        if (file_exists("'$name'")==1 || is_file($name)) {
+        if (file_exists("'$name'") == 1 || is_file($name)) {
             print ($name . ' already exist' . PHP_EOL);
             return true;
         }
         $dir = dirname($name);
         if (!is_dir($dir)) {
-            try{
-                mkdir($dir, 777, true);
-            }catch (\Exception $e){
-                var_dump($dir);
+            try {
+                Yii::info(['mkdir' => $dir], __CLASS__);
+                FileHelper::createDirectory($dir);
+                //mkdir($dir, 0777, true);
+            } catch (\Exception $e) {
                 throw $e;
             }
         }
@@ -113,13 +121,13 @@ class WgetTransfer
     public function testDownloadIsDone($by = 2, $data = null)
     {
         if ($by == self::TEST_DOWN_BY_NUM) {
-            return $this->testDoneByNum($data);
+            return $this->testDoneByNum($this->ignoreNumber);
         } else {
-            return $this->testDoneByPid($data);
+            return $this->testDoneByPid($data, $this->ignoreNumber);
         }
     }
 
-    //
+    //通过wget进程的数量判断
     public function testDoneByNum($num = 2)
     {
         $time = time();
@@ -137,8 +145,8 @@ class WgetTransfer
         return self::STATUS_TIMEOUT;
     }
 
-    //
-    private function testDoneByPid($pids)
+    //通过下载的pid数量判断
+    private function testDoneByPid($pids, $ignoreNumber = 0)
     {
         $time = time();
         $Command = "ps aux | awk '{print $2}' |grep {:pid}";
@@ -149,27 +157,39 @@ class WgetTransfer
                 array_push($tempid, $pid);
             }
         }
-        if (count($tempid) < 1) {
-            return true;
+        
+        if (is_array(static::$pids) && count(static::$pids) > 0 && count($tempid) > 0) {
+            $tempid = array_merge($tempid, static::$pids);
         }
+
         for ($i = 0; $i < $this->testTimes; $i++) {
             sleep($this->testInterval);
+           
+            if (count($tempid) < $ignoreNumber + 1) {
+                if (is_array($tempid) && count($tempid) > 1) {
+                    static::$pids = array_merge(static::$pids, $tempid);
+                }
+                return self::STATUS_SUCCESS;
+            }
+
             if (time() - $time > $this->timeOut) {
+                if(count($tempid)>0){
+                    foreach ($tempid as $key => $pid) {
+                        $timeout[]=exec("ps aux |grep $pid");
+                    }
+                    Yii::warning(['timeout' => $timeout], __CLASS__);
+                }
                 return self::STATUS_TIMEOUT;
             }
-
-            if (count($pids) <= 0) {
-                return $done;
-            }
-
-            foreach ($pids as $key => $pid) {
+            
+            foreach ($tempid as $key => $pid) {
                 $testCommand = str_replace('{:pid}', $pid, $Command);
                 $result = exec($testCommand);
                 if ($result == '') {
                     $done[$pid] = true;
-                    unset($pids[$key]);
+                    unset($tempid[$key]);
                 } else {
-                    print($result . "|");
+                    print($result . "-$i|");
                 }
             }
         }

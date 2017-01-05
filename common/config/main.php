@@ -16,14 +16,15 @@ return [
             'targets' => [
                 'file' => [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['info','error'],
-                    'categories' => ['yii\db\*'],
+                    //'levels' => ['error','warning','info','trace','profile'],
+                    //'categories' => ['yii\db\*'],
                     //'exportInterval' => 1,
                     //'logFile' => '@app/runtime/logs/warning.log',
                 ],
                 'db' => [
                     'class' => 'yii\log\DbTarget',
                     'levels' => ['error', 'warning'],
+                    'logTable'=> 'yii_log',
                 ]
             ],
         ],
@@ -31,8 +32,12 @@ return [
     'modules' => [
         'debug' => [
             'class' => 'yii\debug\Module',
-            'allowedIPs' => ['1.2.3.4', '127.0.0.1', '::1','*'],
+            'allowedIPs' => ['127.0.0.1', '::1','192.168.3.*'],
             'historySize'=>500
+        ],
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'allowedIPs' => ['127.0.0.1', '::1','192.168.3.*'],
         ]
     ],
     'timeZone'=>'Asia/Chongqing',

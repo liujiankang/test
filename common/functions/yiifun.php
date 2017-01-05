@@ -12,6 +12,10 @@ function getDb(){
 }
 
 function getLog(){
-    return Yii::$app->response;
+    return Yii::$app->log;
+}
+
+function yiiTrace($info,$controller){
+    Yii::trace($info,$controller);
 }
 
