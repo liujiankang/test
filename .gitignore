@@ -32,4 +32,15 @@ phpunit.phar
 # vagrant runtime
 /.vagrant
 
-/frontend/web
+/common/runtime
+/frontend/config/*local.php
+/frontend/runtime
+/frontend/web/assert
+
+/backend/config/*local.php
+/backend/runtime
+/backend/web/assert
+
+/backend/config/*local.php
+/backend/runtime
+/backend/web/assert

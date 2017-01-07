@@ -1,6 +1,6 @@
 <?php
 return [
-    'bootstrap' => ['debug'],
+    'bootstrap' => ['log','debug'],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
@@ -14,12 +14,18 @@ return [
             'class' => 'yii\log\Dispatcher',
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
-                'file' => [
-                    'class' => 'yii\log\FileTarget',
+                'error' => [
                     //'levels' => ['error','warning','info','trace','profile'],
                     //'categories' => ['yii\db\*'],
-                    //'exportInterval' => 1,
-                    //'logFile' => '@app/runtime/logs/warning.log',
+                    //'exportInterval' => 1, //DIRECTORY_SEPARATOR
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error'],
+                    'logFile' => '@app/runtime/logs/logError'. date('Ymd').'.log',
+                ],
+                'info' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['info','trace'],
+                    'logFile' => '@app/runtime/logs/logInfo'. date('Ymd').'.log',
                 ],
                 'db' => [
                     'class' => 'yii\log\DbTarget',
@@ -33,7 +39,8 @@ return [
         'debug' => [
             'class' => 'yii\debug\Module',
             'allowedIPs' => ['127.0.0.1', '::1','192.168.3.*'],
-            'historySize'=>500
+            'historySize'=>500,
+            'dataPath'=>'@common/runtime/debug',
         ],
         'gii' => [
             'class' => 'yii\gii\Module',

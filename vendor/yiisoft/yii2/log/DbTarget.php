@@ -43,6 +43,10 @@ class DbTarget extends Target
      */
     public $logTable = '{{%log}}';
 
+    /**
+     * @var int the lines number of one insertion
+     * */
+    public $batchNumber = 50;
 
     /**
      * Initializes the DbTarget component.
@@ -58,7 +62,7 @@ class DbTarget extends Target
     /**
      * Stores log messages to DB.
      */
-    public function export()
+    public function export2()
     {
         $tableName = $this->db->quoteTableName($this->logTable);
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
@@ -69,7 +73,7 @@ class DbTarget extends Target
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
-                    $text = (string) $text;
+                    $text = (string)$text;
                 } else {
                     $text = VarDumper::export($text);
                 }
@@ -81,6 +85,32 @@ class DbTarget extends Target
                 ':prefix' => $this->getMessagePrefix($message),
                 ':message' => $text,
             ])->execute();
+        }
+    }
+
+    /**
+     * Stores log messages to DB.
+     */
+    public function export()
+    {
+        $tableName = $this->db->quoteTableName($this->logTable);
+        $command = $this->db->createCommand();
+        $batch = array_chunk($this->messages, $this->batchNumber);
+        foreach ($batch as $oneBatch) {
+            $insertData = [];
+            foreach ($oneBatch as $message) {
+                list($text, $level, $category, $timestamp) = $message;
+                if (!is_string($text)) {
+                    // exceptions may not be serializable if in the call stack somewhere is a Closure
+                    if ($text instanceof \Throwable || $text instanceof \Exception) {
+                        $text = (string)$text;
+                    } else {
+                        $text = VarDumper::export($text);
+                    }
+                }
+                array_push($insertData, [$level, $category, $timestamp, $this->getMessagePrefix($message), $text]);
+            }
+            $command->batchInsert($tableName, ['level', 'category', 'log_time', 'prefix', 'message'], $insertData);
         }
     }
 }
