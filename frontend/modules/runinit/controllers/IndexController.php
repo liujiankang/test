@@ -6,9 +6,8 @@ use common\servers\eastmoney\GupiaoNameSynchro;
 use common\servers\eastmoney\GupiaoOpenClosePriceSynchro;
 use common\servers\wangyi\GupiaoOpenClosePriceSynchro as GupiaoOpenClosePriceSynchroWangyi;
 use common\servers\tonghuashun\GupiaoOpenClosePriceSynchro as GupiaoOpenClosePriceSynchroThs;
-use common\servers\confinit\HolidayRawUpdate;
 use yii\web\Controller;
-use common\servers\confinit\HolidayRealInit;
+
 use common\servers\wangyi\GpHistoryEveryday;
 
 /**
@@ -16,25 +15,6 @@ use common\servers\wangyi\GpHistoryEveryday;
  */
 class IndexController extends Controller
 {
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
-    public function actionHolidayReal()
-    {
-        echo 'holiday init';
-        (new HolidayRealInit())->actionRun();
-        echo 'holiday init done';
-        return $this->render('@app/modules/runinit/views/default/index');
-    }
-
-    public function actionHolidayRaw()
-    {
-        echo 'holiday Raw update';
-        (new HolidayRawUpdate())->actionRun();
-        echo 'holiday Raw update done';
-        return $this->render('@app/modules/runinit/views/default/index');
-    }
     //初始化数据库表
     //初始化数据
 

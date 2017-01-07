@@ -1,17 +1,18 @@
 <?php
 
-namespace frontend\modules\runconf\controllers;
+namespace backend\modules\runconf\controllers;
 
 use Yii;
-use frontend\models\runconf\HolidayRaw;
-use frontend\controllers\BaseController;
+use backend\models\runconf\HolidayReal;
+use backend\controllers\BaseController;
+use common\servers\confinit\HolidayRawUpdate;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * HolidayRawController implements the CRUD actions for HolidayRaw model.
+ * HolidayRealController implements the CRUD actions for HolidayReal model.
  */
-class HolidayRawController extends BaseController
+class HolidayRealController extends BaseController
 {
     /**
      * @inheritdoc
@@ -29,12 +30,12 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Lists all HolidayRaw models.
+     * Lists all HolidayReal models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new HolidayRaw();
+        $searchModel = new HolidayReal();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -44,7 +45,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Displays a single HolidayRaw model.
+     * Displays a single HolidayReal model.
      * @param integer $id
      * @return mixed
      */
@@ -56,37 +57,15 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Creates a new HolidayRaw model.
+     * Creates a new HolidayReal model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new HolidayRaw();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $post = Yii::$app->request->post('HolidayRaw');
-            if (isset($post['addDays']) &&$post['addDays']>1) {
-                $addDays =$post['addDays'];
-                $date_str=$post['date_str'];
-                $date_int=$post['date_int'];
-                $type=$post['type'];
-                if(strtotime($date_str)>1){
-                    $date_int=strtotime($date_str);
-                }
-                if($date_int<10){
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
-                $data=[];
-                for ($i = 1; $i < $addDays; $i++) {
-                   $tempInt=$date_int+$i*86400;
-                    $data[]=[date('Y-m-d',$tempInt),$tempInt,$type];
-                }
-                    HolidayRaw::find()
-                        ->createCommand()
-                        ->batchInsert(HolidayRaw::tableName(),['date_str','date_int','type'],$data)
-                        ->execute();
-            }
+        $model = new HolidayReal();
 
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -96,7 +75,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Updates an existing HolidayRaw model.
+     * Updates an existing HolidayReal model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -115,7 +94,7 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Deletes an existing HolidayRaw model.
+     * Deletes an existing HolidayReal model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -128,18 +107,31 @@ class HolidayRawController extends BaseController
     }
 
     /**
-     * Finds the HolidayRaw model based on its primary key value.
+     * Finds the HolidayReal model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return HolidayRaw the loaded model
+     * @return HolidayReal the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = HolidayRaw::findOne($id)) !== null) {
+        if (($model = HolidayReal::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
+     * from holiday raw table get gupiao days and update gupiao days table
+     * */
+    public function actionGupiaoDaySyn()
+    {
+        echo 'began gupiao day update';
+        if ((new HolidayRawUpdate())->actionRun()) {
+            return $this->renderContent('gupiao day update done');
+        } else {
+            return $this->renderContent('gupiao day update fail');
         }
     }
 }

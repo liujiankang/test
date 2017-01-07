@@ -2,6 +2,7 @@
 namespace common\servers\confinit;
 
 use common\models\config\HolidayReal;
+use Yii;
 
 /**
  * init holiday real
@@ -22,8 +23,8 @@ class HolidayRealInit
     {
         $isHave = HolidayReal::findOne(100);
         if ($isHave) {
-            echo 'already done';
-            die;
+            Yii::warning('gupiao day already filled, please init holiday', __METHOD__);
+            return true;
         }
 
         $addDays = [];
@@ -36,22 +37,21 @@ class HolidayRealInit
             if (count($addDays) > $this->batchNum) {
                 $result = $this->addGupiaoDays($addDays);
                 if ($result != count($addDays)) {
-                    echo 'error' . PHP_EOL;
-                    var_dump($addDays);
-                    die;
+                    Yii::error(['msg' => 'gupiao day fill error', 'data' => $addDays], __METHOD__);
+                    return false;
                 } else {
                     $addDays = [];
                 }
             }
         }
-
+        //最后的次数可能不够一批
         $result = $this->addGupiaoDays($addDays);
         if ($result != count($addDays)) {
-            var_dump($addDays);
-            die;
-        } else {
-            $addDays = [];
-        }
+            Yii::error(['msg' => 'gupiao day fill error', 'data' => $addDays], __METHOD__);
+            return false;
+        } 
+        Yii::info('gupiao day fill done', __METHOD__);
+        return true;
     }
 
 

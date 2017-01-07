@@ -4,6 +4,7 @@ namespace common\servers\confinit;
 use common\models\config\HolidayReal;
 use common\models\config\RuntimeConfig;
 use common\models\config\HolidayRaw;
+use Yii;
 
 /**
  * init holiday real
@@ -17,18 +18,20 @@ class HolidayRawUpdate
     {
         $lastTimes = RuntimeConfig::findOne(['action' => 'holiday_update']);
         if (empty($lastTimes)) {
-            echo 'holidayUpdate config error';
+            Yii::error('holiday Update config error', __METHOD__);
+            return false;
         }
         $this->thisTime = time();
         $this->thisLastTime = $lastTimes->last_time;
+        return true;
     }
 
     public function actionRun()
     {
-        $this->init();
-        if (!$this->isNeedUpdate()) {
-            echo 'not need to update';
-            exit;
+
+        if (!$this->init() || !$this->isNeedUpdate()) {
+            Yii::info('holiday real not need to update', __METHOD__);
+            return true;
         }
         $needUpdateMonths = $this->getNeedUpdateMonths();
         foreach ($needUpdateMonths as $month) {
@@ -36,15 +39,15 @@ class HolidayRawUpdate
             $gupiaoDay = $this->getOneMonthGupiaoDays($holidays);
             $deletNum = $this->delOneMonthHolidayDays($holidays);
             $addNum = $this->addOneMonthGupiaoDays($gupiaoDay);
-            var_dump([$month, $holidays, $gupiaoDay, $deletNum, $addNum]);
+            Yii::info(['dealMonth' => $month, 'holidays' => $holidays, 'gupiaoDay' => $gupiaoDay, 'delDays' => $deletNum, 'addDay' => $addNum], __METHOD__);
         }
         $lastTimes = RuntimeConfig::findOne(['action' => 'holiday_update']);
         $lastTimes->last_time = $this->thisTime - 60 * 10;
         if ($lastTimes->save()) {
-            echo 'update success';
+            return true;
         } else {
-            echo 'update error';
-            var_dump($lastTimes->getErrors());
+            Yii::error($lastTimes->getErrors(), __METHOD__);
+            return false;
         }
     }
 
@@ -107,7 +110,7 @@ class HolidayRawUpdate
     }
 
     //unused
-    public function delOneMonthGupiaoDays($gupiaoDays)
+    private function delOneMonthGupiaoDays($gupiaoDays)
     {
         if (is_array($gupiaoDays) && count($gupiaoDays) > 0) {
             $date = current($gupiaoDays);
@@ -144,6 +147,7 @@ class HolidayRawUpdate
                     $del->delete();
                 }
             }
+            return true;
         }
         return false;
     }
