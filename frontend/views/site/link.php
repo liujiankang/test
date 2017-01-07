@@ -14,9 +14,6 @@ $this->title = 'My Gupiao Application';
 
         <div class="row">
             <div class="col-lg-4">
-                <?=Html::a('股票节假日','/runconf/holiday-raw',['class'=>'btn btn-success'])?>
-                <?=Html::a('股票交易日','/runconf/holiday-real',['class'=>'btn btn-success'])?>
-                <?=Html::a('运行配置','/runconf/runtime',['class'=>'btn btn-danger'])?>
                 <?=Html::a('更新假期','/runinit/index/holiday-raw-ljk',['class'=>'btn btn-danger'])?>
                 <?=Html::a('更新交易日','/runinit/index/holiday-real-ljk',['class'=>'btn btn-danger'])?>
                 <?=Html::a('从file更新每天交易简介','/runinit/index/gupiao-history-everyday?byFile=true',['class'=>'btn btn-warning'])?>

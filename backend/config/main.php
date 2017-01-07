@@ -18,6 +18,9 @@ return [
         'system' => [
             'class' => 'backend\modules\system\Module',
         ],
+        'runconf' => [
+            'class' => 'backend\modules\runconf\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -31,15 +34,6 @@ return [
         'session' => [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

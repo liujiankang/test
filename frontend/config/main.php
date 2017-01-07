@@ -24,15 +24,6 @@ return [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -40,9 +31,6 @@ return [
     'modules' => [
         'user' => [
             'class' => 'frontend\modules\user\Module',
-        ],
-        'runconf' => [
-            'class' => 'frontend\modules\runconf\Module',
         ],
         'runinit' => [
             'class' => 'frontend\modules\runinit\Module',
