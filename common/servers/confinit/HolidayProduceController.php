@@ -46,7 +46,10 @@ class HolidayProduceController extends Controller
 
     public function getNeedUpdateMonths()
     {
-        $months = (new Query())->select('*')->from($this->rawHolidayTable)->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->all();
+        $months = (new Query())
+            ->select('*')
+            ->from($this->rawHolidayTable)
+            ->where(['>', 'unix_timestamp(updated_at)', $this->thisLastTime])->all();
         $monthNeedUpdate = [];
         foreach ($months as $month) {
             $monthTemp = date('Y-m', $month['date_int']);
