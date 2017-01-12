@@ -14,7 +14,8 @@ class PhpTransfer extends Component
     public $isSave = false;
     public $oneRequests = 10;
     public $saveSize = 0;
-    private $memory=0;
+    private $memory = 0;
+    private $content = 0;
 
     public function init()
     {
@@ -32,13 +33,14 @@ class PhpTransfer extends Component
         $this->getMultiContent($testUrl);
     }
 
-    public function disPatch($urls){
-        $content=[];
-        $blocks=array_chunk($urls,$this->oneRequests);
-        foreach ($blocks as $one){
-
+    public function disPatch($urls)
+    {
+        $blocks = array_chunk($urls, $this->oneRequests);
+        foreach ($blocks as $one) {
+            
         }
     }
+
     public function getMultiContent($urls)
     {
         if (!is_array($urls) && !isset($urls[0]['url'])) {
@@ -74,11 +76,13 @@ class PhpTransfer extends Component
         return $res;
     }
 
-    public function saveContent(){
+    public function saveContent()
+    {
 
     }
 
-    public function getMemoryUsage(){
-        
+    public function getMemoryUsage()
+    {
+
     }
 }
