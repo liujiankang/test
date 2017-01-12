@@ -22,6 +22,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'date_int') ?>
 
     <?= $form->field($model, 'type') ?>
+    <?= $form->field($model, 'is_downed') ?>
 
     <?= $form->field($model, 'updated_at') ?>
 

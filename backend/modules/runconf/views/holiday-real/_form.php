@@ -19,6 +19,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'type')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'is_downed')->textInput() ?>
     
     <?= $form->field($model, 'updated_at')->textInput() ?>
 

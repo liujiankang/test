@@ -51,12 +51,6 @@ class GpEverydayDealDetails extends BaseService
     public function actionRun()
     {
         $this->init();
-//        $this->getCodesF('2016-12-16');
-//        $this->getCodesF('2016-12-19');
-//        $this->getCodesF('2016-12-20');
-//        $this->getCodesF('2016-12-21');
-//        $this->getCodesF('2016-12-22');
-//        $this->getCodesF('2016-12-23');
         $this->getCodesF('2016-12-28');
     }
 

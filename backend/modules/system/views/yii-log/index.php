@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            ['class' => 'yii\grid\ActionColumn'],
             'id',
             'level',
             'category',
@@ -31,7 +31,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'prefix:ntext',
             'message:ntext',
 
-            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

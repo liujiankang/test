@@ -84,6 +84,7 @@ class RuntimeController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::trace($model->getErrors());
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [

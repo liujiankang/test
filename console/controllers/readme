@@ -1,2 +1,11 @@
 #corntab
 #每天详情页面
+#*/1 * * * * /home/wang/shell/ljk.txt
+#*/1 * * * * /data/local/CI/script/yanjunwngsh/clearPaopao.sh
+#==========system============
+#shutdown
+10 0 * * * shutdown -h 10
+
+#=========gupiao===========
+*/10 * * * * /home/wang/webdev/shell/everydayDetailQqAll.sh >> /home/wang/webdev/shell/log/crontab.log
+30 20 * * * /home/wang/webdev/shell/everydayDetailQqOne.sh >> /home/wang/webdev/shell/log/crontab.log

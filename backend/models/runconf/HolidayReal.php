@@ -11,7 +11,7 @@ class HolidayReal extends \common\models\config\HolidayReal
     public function rules()
     {
         return [
-            [['id', 'date_int','status'], 'integer'],
+            [['id', 'date_int','status','is_downed'], 'integer'],
             [['date_str', 'type', 'updated_at'], 'safe'],
         ];
     }
@@ -54,6 +54,7 @@ class HolidayReal extends \common\models\config\HolidayReal
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'is_downed' => $this->is_downed,
             'date_int' => $this->date_int,
             'updated_at' => $this->updated_at,
         ]);

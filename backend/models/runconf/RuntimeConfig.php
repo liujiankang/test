@@ -21,7 +21,7 @@ class RuntimeConfig extends \common\models\config\RuntimeConfig
     {
         return [
             [['id', 'last_time'], 'integer'],
-            [['model', 'action', 'describe'], 'safe'],
+            [['model', 'action', 'describe','detail'], 'safe'],
         ];
     }
 

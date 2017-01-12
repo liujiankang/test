@@ -1,6 +1,7 @@
 <?php
 namespace common\lib\http;
 
+use Faker\Provider\UserAgent;
 use yii\helpers\FileHelper;
 use Yii;
 
@@ -15,7 +16,7 @@ class WgetTransfer
 
     static $pids = [];
     public $url;
-    public $ignoreNumber = 2;
+    public $ignoreNumber = 5;
     public $saveDir;
     public $params = [];
     public $heads = [];
@@ -29,6 +30,7 @@ class WgetTransfer
     {
         empty($saveDir) ? '' : $this->saveDir = $saveDir;
         empty($timeOut) ? '' : $this->timeOut = $timeOut;
+        $this->userAgent=UserAgent::userAgent();
     }
 
     /**
@@ -49,9 +51,14 @@ class WgetTransfer
                 $name = $this->saveDir . $url['dir'] . $key;
             }
             $downUrl = $url['url'];
-            $urls[$key]['result'] = $this->getContent($downUrl, $name);
+            $result = $this->getContent($downUrl, $name);
+            if ($result > 1) {
+                $urls[$key]['result'] = $result;
+            } else {
+                unset($urls[$key]);
+            }
         }
-        if ($isWait) {
+        if ($isWait && count($urls)>0) {
             //(array_column($urls, 'result'));
             return $this->testDownloadIsDone(self::TEST_DOWN_BY_PID, array_column($urls, 'result'));
         } else {
@@ -66,7 +73,7 @@ class WgetTransfer
         }
         if (file_exists("'$name'") == 1 || is_file($name)) {
             print ($name . ' already exist' . PHP_EOL);
-            return true;
+            return false;
         }
         $dir = dirname($name);
         if (!is_dir($dir)) {
@@ -149,7 +156,7 @@ class WgetTransfer
     private function testDoneByPid($pids, $ignoreNumber = 0)
     {
         $time = time();
-        $Command = "ps aux | awk '{print $2}' |grep {:pid}";
+        $Command = "ps aux | grep wget | awk '{print $2}' |grep {:pid}";
         $done = [];
         $tempid = [];
         foreach ($pids as $pid) {
@@ -157,31 +164,31 @@ class WgetTransfer
                 array_push($tempid, $pid);
             }
         }
-        
+
         if (is_array(static::$pids) && count(static::$pids) > 0 && count($tempid) > 0) {
             $tempid = array_merge($tempid, static::$pids);
         }
 
         for ($i = 0; $i < $this->testTimes; $i++) {
             sleep($this->testInterval);
-           
+
             if (count($tempid) < $ignoreNumber + 1) {
                 if (is_array($tempid) && count($tempid) > 1) {
-                    static::$pids = array_merge(static::$pids, $tempid);
+                    static::$pids = array_unique(array_merge(static::$pids, $tempid));
                 }
                 return self::STATUS_SUCCESS;
             }
 
             if (time() - $time > $this->timeOut) {
-                if(count($tempid)>0){
+                if (count($tempid) > 0) {
                     foreach ($tempid as $key => $pid) {
-                        $timeout[]=exec("ps aux |grep $pid");
+                        $timeout[] = exec("ps aux |grep $pid");
                     }
                     Yii::warning(['timeout' => $timeout], __CLASS__);
                 }
                 return self::STATUS_TIMEOUT;
             }
-            
+
             foreach ($tempid as $key => $pid) {
                 $testCommand = str_replace('{:pid}', $pid, $Command);
                 $result = exec($testCommand);

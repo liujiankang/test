@@ -5,14 +5,13 @@ namespace backend\modules\system\controllers;
 use Yii;
 use backend\models\system\YiiLog;
 use backend\controllers\BaseController;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * YiiLogController implements the CRUD actions for YiiLog model.
  */
-class YiiLogController extends Controller
+class YiiLogController extends BaseController
 {
     /**
      * @inheritdoc
@@ -36,7 +35,7 @@ class YiiLogController extends Controller
     public function actionIndex()
     {
         $searchModel = new YiiLog();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(array_merge(['sort' => '-id', 's' => '/system/yii-log'], Yii::$app->request->queryParams));
 
         return $this->render('index', [
             'searchModel' => $searchModel,

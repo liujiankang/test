@@ -2,31 +2,32 @@
 namespace console\controllers;
 
 /**
- * 定时任务得到每一天的股票买卖详情数据
+ * 定时删除重复的日志信息
  * User: Administrator
  * Date: 2016/11/16
  * Time: 21:51
  */
 use Yii;
-use common\servers\confinit\HolidayRealInit;
+use yii\helpers\FileHelper;
 
-class InitController extends BaseController
+class UnlinkLogController extends BaseController
 {
-    public function actionRun()
+    public function actionUnShellLog()
     {
-        //填充股票交易日
-        $this->fillGupiaoDay();
+        $files = FileHelper::findFiles('/home/wang/webdev/shell/log/');
+        $hashFiles = [];
+        foreach ($files as $file) {
+            $hash = hash_file('md5', $file);
+            if (in_array($hash, $hashFiles)) {
+                unlink($file);
+            } else {
+                array_push($hashFiles, $hash);
+            }
+
+        }
+        echo 'done';
     }
 
-    private function fillGupiaoDay()
-    {
-        echo 'holiday init began';
-        if ((new HolidayRealInit())->actionRun()) {
-            echo 'holiday init done';
-        } else {
-            echo 'holiday init fail';
-        };
-    }
 }
 
 

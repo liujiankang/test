@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'date_int',
             'type',
             'status',
+            'is_downed',
             'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],

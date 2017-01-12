@@ -48,7 +48,7 @@ class YiiLog extends \common\models\system\YiiLog
      */
     public function search($params)
     {
-        $query = YiiLog::find();
+        $query = static::find();
 
         // add conditions that should always apply here
 

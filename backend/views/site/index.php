@@ -5,20 +5,19 @@
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
-
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="">Get started with Yii</a></p>
+        <h1>welcome to admin controller</h1>
+        <p>
+            <a class="btn btn-lg btn-success" href="/debug" target="_blank">go to debug</a>
+            <a class="btn btn-lg btn-success" href="/gii" target="_blank">go to gii</a>
+            <a class="btn btn-lg btn-success" href="/system/yii-log/index?s=%2Fsystem%2Fyii-log&sort=-id" target="_blank">go to log</a>
+        </p>
     </div>
 
     <div class="body-content">
-
         <div class="row">
             <div class="col-lg-4">
-                <p><a class="btn btn-success" href="/runconf/holiday-raw">股票节假日</a></p>
+                <p><a class="btn btn-success"  href="/runconf/holiday-raw">股票节假日</a></p>
                 <p>
                     <a class="btn btn-success" href="/runconf/holiday-real">股票交易日</a>
                     <a class="btn btn-danger" href="/runconf/holiday-real/gupiao-day-syn">更新股票交易日</a>

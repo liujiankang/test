@@ -56,7 +56,7 @@ class GpEverydayDealDetails extends BaseService
 //        $this->getCodesF('2016-12-20');
 //        $this->getCodesF('2016-12-21');
 //        $this->getCodesF('2016-12-22');
-        $this->getCodesF('2016-12-26');
+        $this->getCodesF('2017-01-03');
     }
 
     public function disPatch()
