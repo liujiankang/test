@@ -26,14 +26,33 @@ return [
                     //'exportInterval' => 1, //DIRECTORY_SEPARATOR
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error'],
-                    'logFile' => '@app/runtime/logs/logError' . date('Ymd') . '.log',
+                    'logFile' => '@app/runtime/logs/' . date('Ymd') . '/logError.log',
+                    'logVars' => []
                     //logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']
                 ],
-//                'info' => [
-//                    'class' => 'yii\log\FileTarget',
-//                    'levels' => ['info', 'trace'],
-//                    'logFile' => '@app/runtime/logs/logInfo' . date('Ymd') . '.log',
-//                ],
+                'waring' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error'],
+                    'logFile' => '@app/runtime/logs/' . date('Ymd') . '/logWaring.log',
+                    'logVars' => []
+                ],
+                'info' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error'],
+                    'logFile' => '@app/runtime/logs/' . date('Ymd') . '/logInfo.log',
+                    'logVars' => []
+                ],
+                'trace' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error'],
+                    'logFile' => '@app/runtime/logs/' . date('Ymd') . 'logTrace.log',
+                ],
+                'var' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => [],
+                    'logFile' => '@app/runtime/logs/' . date('Ymd') . '/logVar.log',
+                    'logVars' => ['_GET', '_POST','debug']
+                ],
                 'db' => [
                     'class' => 'yii\log\DbTarget',
                     'levels' => ['error', 'warning'],

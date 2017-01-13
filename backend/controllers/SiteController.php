@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use common\lib\http\CurlTransfer;
 use Yii;
 use yii\helpers\FileHelper;
 
@@ -15,6 +16,12 @@ class SiteController extends BaseController
     }
 
     public function actionTest()
+    {
+        (new CurlTransfer())->test();
+        return $this->render('index');
+    }
+
+    public function actionTest2()
     {
         //$files = FileHelper::findFiles('/home/wang/webdev/shell/log/');
         //$files = FileHelper::findFiles('/data/gupiao/tencent/2016/20160104');
