@@ -92,6 +92,7 @@ class CurlTransfer extends Component
                 }
             }
             curl_setopt($conn[$i], CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($conn[$i], CURLOPT_BINARYTRANSFER, 1);
             curl_setopt($conn[$i], CURLOPT_HEADER, $this->isGetHeard);
             //curl_setopt($conn[$i], CURLOPT_BUFFERSIZE, 1 * 1024 * 1024 * 8);
             curl_setopt($conn[$i], CURLOPT_URL, $one['url']);
