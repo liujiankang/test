@@ -2,6 +2,7 @@
 namespace backend\controllers;
 
 use common\lib\http\CurlTransfer;
+use common\servers\tencent\GpEverydayDealDetails;
 use Yii;
 use yii\helpers\FileHelper;
 
@@ -17,7 +18,7 @@ class SiteController extends BaseController
 
     public function actionTest()
     {
-        (new CurlTransfer())->test();
+        (new GpEverydayDealDetails())->actionOneSyn();
         return $this->render('index');
     }
 

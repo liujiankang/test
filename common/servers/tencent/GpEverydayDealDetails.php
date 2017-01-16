@@ -7,15 +7,19 @@
  */
 namespace common\servers\tencent;
 
+use common\lib\http\CurlTransfer;
 use common\lib\http\WgetTransfer;
 use common\lib\log\LogText;
+use common\models\config\HolidayReal;
 use common\models\gupiao\GupiaoCode;
 use common\models\gupiao\GupiaoEverydayWangyi as GupiaoEveryModel;
+use common\models\gupiao\GupiaoEverydayWangyi;
 use common\servers\BaseService;
 use common\lib\http\PhpTransfer;
 use common\models\config\RuntimeConfig;
 use common\servers\wangyi\GpHistoryEveryday;
 use Yii;
+use yii\helpers\FileHelper;
 
 class GpEverydayDealDetails extends BaseService
 {
@@ -35,74 +39,196 @@ class GpEverydayDealDetails extends BaseService
     public $keyFloatFormat = [13, 14];
     public $maxId;
     public $minId;
-    public $fileExt='.qq.xls';
+    public $fileExt = '.qq.xls';
+    public $runningKey = '';
 
     public function init()
     {
         parent::init();
-        $this->httpOperator = new WgetTransfer('/data/gupiao/tencent/');
-        $this->httpOperator->init('/data/gupiao/tencent/');
+        $this->httpOperator = new CurlTransfer();
         $this->codeTypeMap = [
             GupiaoCode::TYPE_HUA => 'sh', GupiaoCode::TYPE_HUB => 'sh',
             GupiaoCode::TYPE_ZHA => 'sz', GupiaoCode::TYPE_ZHB => 'sz',
         ];
     }
 
-    public function actionRun()
+    /**
+     * 股票当天成交详情同步
+     * */
+    public function actionOneSyn()
     {
-        $this->init();
-        $this->getCodesF('2016-12-28');
+        $date = date('Y-m-d');
+        $this->runningKey = md5(__METHOD__ . $date);
+        if ($this->isRunning($this->runningKey)) {
+            Yii::warning('getting data of day ' . $date . ' is running');
+            return false;
+        } else {
+            if (HolidayReal::findOne(['date_str' => $date, 'status' => 1])) {
+                Yii::info('getting data of day ' . $date . ' start');
+                $this->getCodesF($date);
+                Yii::info('getting data of day ' . $date . ' end');
+            } else {
+                Yii::warning('this day is not gupiao day ' . $date, __METHOD__);
+            }
+            return true;
+        }
     }
 
-    public function disPatch()
+    /**
+     * 股票历史每一天成交详情同步
+     * */
+    public function actionAllSyn()
     {
-        $this->maxId = 200000;
-        $this->minId = 0;
-        $status = GupiaoEveryModel::STATUS_UNDOWN;
-        $codes = $this->getCodes('2016-12-12', $status);
-        foreach ($codes as &$code) {
-            $code['date_str'] = '2016-12-19';
+        if ($lastDate = $this->getLastDate()) {
+            $nextDay = $this->getNextDate($lastDate);
+            if ($nextDay) {
+                $configDate = $lastDate->detail;
+                $configDate['lastDate'] = $nextDay->date_str;
+                $lastDate->detail = json_encode($configDate);
+                $this->runningKey = md5(__METHOD__ . $nextDay->date_str);
+                if ($this->isRunning($this->runningKey)) {
+                    Yii::warning('getting data of day ' . $nextDay->date_str . ' is running', __METHOD__);
+                } else {
+                    Yii::info("began get date $nextDay->date_str data", __METHOD__);
+                    $nextDay->is_downed = HolidayReal::DOWN_STATUS_DOWNING;
+                    if (!$nextDay->save()) {
+                        var_dump($nextDay->getErrors());
+                    };
+                    $this->disPatch($nextDay->date_str);
+                    if (!$lastDate->save()) {
+                        var_dump($lastDate->getErrors());
+                    }
+                    $nextDay->is_downed = HolidayReal::DOWN_STATUS_DONE;
+                    if (!$nextDay->save()) {
+                        var_dump($nextDay->getErrors());
+                    };
+                    Yii::info("ended get date $nextDay->date_str data", __METHOD__);
+                    return true;
+                }
+            }
         }
-        if (empty($codes)) {
-            echo 'none something';
-            return true;
+        return false;
+    }
+
+    //得到上一个更新的日期
+    public function getLastDate()
+    {
+        $lastDate = RuntimeConfig::findOne(['action' => 'qq_get_all_detail_by_day']);
+        if (!empty($lastDate->detail)) {
+            $lastDate->detail = json_decode($lastDate->detail, true);
+        }
+        if (!is_array($lastDate->detail) || !isset($lastDate->detail['lastDate'])) {
+            Yii::warning(['msg' => 'config error and have to init', 'data' => $lastDate->detail], __METHOD__);
+            $lastDate->detail = ['lastDate' => '2016-01-01', 'endDate' => '2016-12-12'];
+        }
+        return $lastDate;
+    }
+
+    public function getNextDate($lastDate)
+    {
+        $configDate = $lastDate->detail;
+        $nextDay = HolidayReal::find()
+            ->where(['status' => HolidayReal::STATUS_WORKDAY, 'is_downed' => [HolidayReal::DOWN_STATUS_NOT_BEGAN, HolidayReal::DOWN_STATUS_DOWNING]])
+            ->andWhere(['>', 'date_str', $configDate['lastDate']])
+            ->andWhere(['<', 'date_str', $configDate['endDate']])
+            ->orderBy('date_str')
+            ->one();
+        if (empty($nextDay)) {
+            Yii::warning(['msg' => 'history data already done'], __METHOD__);
         } else {
-            $urls = $this->getDownUrl($codes);
-            return $this->httpOperator->getMultiContent($urls, true);
+            if ($nextDay->is_downed == HolidayReal::DOWN_STATUS_DOWNING) {
+                if (time() - strtotime($nextDay->updated_at) > 4 * 60 * 60) {
+                    $exceptionNum = HolidayReal::find()
+                        ->where(['status' => HolidayReal::STATUS_WORKDAY, 'is_downed' => HolidayReal::DOWN_STATUS_EXCEPTION])
+                        ->count();
+                    if ($exceptionNum < 3) {
+                        Yii::error(['msg' => 'there has one download exceptions on date ' . $nextDay->date_str], __METHOD__);
+                        $nextDay->is_downed = HolidayReal::DOWN_STATUS_EXCEPTION;
+                        $nextDay->save(false);
+                    } else {
+                        Yii::error(['msg' => 'there has too many download exceptions'], __METHOD__);
+                    }
+                }
+            } else {
+                return $nextDay;
+            }
         }
+        return false;
+    }
+
+    public function disPatch($date)
+    {
+        $status = GupiaoEveryModel::STATUS_UNDOWN;
+        $gupiaoRaw = $this->getCodes($date, $status);
+        if (empty($gupiaoRaw)) {
+            Yii::warning(['msg' => 'this day do not have gupiao', 'date' => $date], __METHOD__);
+        } else {
+            $gupiaos = array_chunk($gupiaoRaw, 15);
+            $allNum = count($gupiaos);
+            foreach ($gupiaos as $key => $gupiaoTen) {
+                $this->runningTouch($this->runningKey);
+                $downUrl = $this->getDownUrl($gupiaoTen);
+                $downTime = time();
+                $result = $this->httpOperator->getMultiContent($downUrl, true);
+                $percent = round($key / $allNum * 100, 1);
+                var_dump(['percent' => "$key/$allNum = $percent %", 'result' => $result]);
+                Yii::info(['gupiaos' => $gupiaos, 'result' => $result], __METHOD__);
+                $this->updateCodesStatus($gupiaoTen, GupiaoEverydayWangyi::STATUS_DOWNED);
+                if (time() - $downTime > 10) {
+                    sleep(5);
+                }
+            }
+        }
+        return true;
     }
 
     /**
      * 得到要更新的code
      * */
-    public function getCodes($date, $status)
+    public function getCodes($date, $status, $limit = 0)
     {
         $sql = "SELECT d.id, d.date_str, c.code, c.type  
               FROM gp_everyday_wangyi AS d
               INNER JOIN gp_gupiao_code AS c ON d.gp_id=c.id 
-              WHERE d.id BETWEEN $this->minId AND $this->maxId AND d.date_str=:date AND d.status=:status
-              LIMIT 10";
+              WHERE d.date_str=:date AND d.status=:status ";
+        if ($limit > 0) {
+            $sql .= "LIMIT $limit";
+        }
         $result = Yii::$app->db->createCommand($sql, [':date' => $date, ':status' => $status]);
-        //echo $result->getRawSql();
         return $result->queryAll();
+    }
+
+    /**
+     * 更新要更新的code
+     * */
+    public function updateCodesStatus($data, $status)
+    {
+        if (empty($data) || !isset($data[0]['id'])) {
+            return false;
+        } else {
+            $ids = array_column($data, 'id');
+            return GupiaoEverydayWangyi::updateAll(['status' => $status], ['id' => $ids]);
+        }
     }
 
     public function getCodesF($date)
     {
         $gupiaoRaw = GupiaoCode::find()->select(['code', 'type'])->asArray()->all();
         $gupiaos = array_chunk($gupiaoRaw, 10);
-        $downTime=0;
-        foreach ($gupiaos as $gupiaoTen) {
+        $allNum = count($gupiaos);
+        foreach ($gupiaos as $key => $gupiaoTen) {
             foreach ($gupiaoTen as &$val) {
                 $val['date_str'] = $date;
             }
-            $downUrl=$this->getDownUrl($gupiaoTen);
-            $downTime=time();
-            $result=$this->httpOperator->getMultiContent($downUrl, true);
-            var_dump($result);
-            if (time() - $downTime > 5) {
-                //sleep(10);
+            $downUrl = $this->getDownUrl($gupiaoTen);
+            $downTime = time();
+            $result = $this->httpOperator->disPatch($downUrl);
+            $percent = round($key / $allNum * 100, 1);
+            var_dump(['percent' => "$key/$allNum = $percent %", 'result' => $result]);
+            if (time() - $downTime > 10) {
+                sleep(1);
             }
+            return false;
         }
     }
 
@@ -112,16 +238,16 @@ class GpEverydayDealDetails extends BaseService
             return false;
         }
 
-        if (!isset($data[0]['code']) || !isset($data[0]['type']) || !isset($data[0]['date_str']) || strlen($data[0]['date_str']) < 8 ) {
+        if (!isset($data[0]['code']) || !isset($data[0]['type']) || !isset($data[0]['date_str']) || strlen($data[0]['date_str']) < 8) {
             return false;
         }
 
         $returnData = [];
         foreach ($data as $key => $val) {
             $time = strtotime($val['date_str']);
-            $dir = date('Y', $time) . DIRECTORY_SEPARATOR . date('Ymd',$time) . DIRECTORY_SEPARATOR;
-            $date= date('Ymd', $time);
-            $name = $date.'_'.$val['code'] . $this->fileExt;
+            $dir = date('Y', $time) . DIRECTORY_SEPARATOR . date('Ymd', $time) . DIRECTORY_SEPARATOR;
+            $date = date('Ymd', $time);
+            $name = $date . '_' . $val['code'] . $this->fileExt;
             $downCode = $this->codeTypeMap[$val['type']] . $val['code'];
             //$downName = date('Y', $time) . '/' . date('Ymd', $time) . '/' . $name.'.xls';
             $url = str_replace('{:code}', $downCode, $this->requestUrl);
@@ -131,16 +257,11 @@ class GpEverydayDealDetails extends BaseService
         return $returnData;
     }
 
-    public function writeAllCode()
-    {
-        $gupiaoCodes = GupiaoCode::find()
-            ->select('code')
-            ->asArray()
-            ->column();
-        $str = implode("\n", $gupiaoCodes);
-        $file = fopen('gupiaoCode.text', 'a+');
-        fwrite($file, $str);
-        fclose($file);
+    public function getContentByFiles($date){
+        $files=FileHelper::findFiles('/data/www');
+        foreach ($files as $file){
+            $content=$this->getOneContentByFile(454);
+        }
     }
 
     public function writeAllContent()
